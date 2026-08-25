@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
+import { PageTransition } from "@/components/PageTransition";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -16,7 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="zh-CN">
       <body className="antialiased">
         <Nav />
-        <main className="mx-auto max-w-5xl px-6">{children}</main>
+        <PageTransition>{children}</PageTransition>
         <Footer />
       </body>
     </html>
