@@ -2367,7 +2367,7 @@ git add -A && git commit -m "feat: add SEO metadata, sitemap, robots and 404 pag
 - [ ] **Step 1: 推送代码**
 
 ```bash
-git remote add origin https://github.com/YOUR_NAME/portfolio-blog.git
+git remote add origin https://github.com/ryiatan1127/portfolio-blog.git
 git push -u origin main
 ```
 
