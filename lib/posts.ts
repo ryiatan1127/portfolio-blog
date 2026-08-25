@@ -5,6 +5,13 @@ import { toPlainText } from "./plaintext";
 
 const postsDir = path.join(process.cwd(), "content", "posts");
 
+// YAML 的 `date: 2026-08-25` 会被 gray-matter/js-yaml 解析成 Date 对象，
+// 直接渲染会报 "Objects are not valid as a React child"；统一归一化为 YYYY-MM-DD 字符串。
+function asDateString(v: unknown): string {
+  if (v instanceof Date) return v.toISOString().slice(0, 10);
+  return String(v);
+}
+
 export type PostMeta = {
   slug: string;
   title: string;
@@ -23,7 +30,8 @@ function readPosts(): PostMeta[] {
   const posts = files.map((f) => {
     const raw = fs.readFileSync(path.join(postsDir, f), "utf8");
     const { data } = matter(raw);
-    return { slug: f.replace(/\.mdx$/, ""), ...(data as Omit<PostMeta, "slug">) };
+    const meta = { slug: f.replace(/\.mdx$/, ""), ...(data as Omit<PostMeta, "slug">) };
+    return { ...meta, date: asDateString(meta.date) };
   });
   return posts
     .filter((p) => !p.draft)
@@ -47,7 +55,7 @@ export function getPostBySlug(slug: string): Post | undefined {
   const { data, content } = matter(raw);
   const meta = { slug, ...(data as Omit<PostMeta, "slug">) };
   if (meta.draft) return undefined; // 草稿不发布，也不可直链访问
-  return { ...meta, content };
+  return { ...meta, date: asDateString(meta.date), content };
 }
 
 export function getAllTags(): { tag: string; count: number }[] {
