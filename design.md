@@ -11,7 +11,7 @@
 
 - **Next.js 15（App Router）+ TypeScript**，`output: 'export'` 静态导出，部署到任意静态托管（Vercel / Cloudflare Pages），零服务器、零月费。
 - **单一仓库**，作品集与博客共用一套框架、设计系统与动效组件。
-- **动效统一由 Motion 承担**，粒子由 tsparticles 承担。
+- **动效统一由 Motion 承担**，粒子为自研 Canvas 轻量实现（无第三方依赖，见 §7.2）。
 - **博客由 MDX + gray-matter 驱动**，静态生成所有文章页；**构建时生成搜索索引 JSON**，前端做客户端搜索（无后端）。
 - **无后端、无数据库、无评论系统**（评论 Giscus 已按用户决定移除，2026-08-25）。
 
@@ -22,7 +22,7 @@
 | 框架 | Next.js（App Router）+ TypeScript | 15.x | 静态导出 |
 | 样式 | Tailwind CSS | v4 | 配合 CSS 变量做主题 token |
 | 动效 | Motion（`motion/react`） | 最新 | 滚动叙事 / 微交互 / 转场 |
-| 粒子 | `@tsparticles/react` + `@tsparticles/slim` | 最新 | slim 版控制体积 |
+| 粒子 | 自研 Canvas（`components/ParticleBackground.tsx`） | — | 漂浮粒子 + 鼠标光晕染色，零依赖、体积小 |
 | 博客 | `gray-matter` + `next-mdx-remote-client` | 最新 | frontmatter 解析 + MDX 渲染 |
 | 代码高亮 | `rehype-pretty-code` + `shiki` | 最新 | 行号 + 语言标注 + 主题 |
 | 标题锚点 | `rehype-slug` + `github-slugger` | 最新 | 为 TOC 生成稳定 id |
@@ -116,8 +116,8 @@ portfolio-blog/
 - 可访问性：动效尊重 `prefers-reduced-motion`（`useReducedMotion` 降级为纯淡入/无位移），不强制用户观看动画。
 
 ### 7.2 粒子 / 微交互
-- Hero 背景 tsparticles 粒子漂浮，鼠标悬停连线（grab）、点击爆裂（explode 模式）。
-- 粒子组件经 `next/dynamic`（`ssr: false`）按需加载，避免拖慢首页 LCP（NFR-1）。
+- Hero 背景为**自研 Canvas 粒子系统**（`components/ParticleBackground.tsx`，零依赖）：低饱和粉色漂浮粒子 + 相互连线；鼠标移入时在光标周围生成**淡蓝色径向光晕**，光晕内的粒子**渐变为淡蓝**（染色），并与光标产生连线（grab 交互）；鼠标移开后光晕与染色**缓慢消散**。
+- 粒子系统经 `next/dynamic`（`ssr: false`）按需加载，避免拖慢首页 LCP（NFR-1）；尊重 `prefers-reduced-motion`（开启时渲染空背景，由 Hero 渐变兜底）。
 - 微交互：导航滚动变色、玻璃卡片 hover 抬升/发光、页面转场淡入。
 
 ### 7.3 博客炫酷（保持阅读舒适）

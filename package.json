@@ -13,8 +13,6 @@
     "predev": "node scripts/build-search-index.mjs"
   },
   "dependencies": {
-    "@tsparticles/react": "^4.3.2",
-    "@tsparticles/slim": "^4.3.2",
     "github-slugger": "^2.0.0",
     "gray-matter": "^4.0.3",
     "motion": "^13.1.1",

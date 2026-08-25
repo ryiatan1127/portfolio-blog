@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { motion } from "motion/react";
 import { Wing, MusicNote, Star } from "./decorations";
 
-// 粒子经 dynamic + ssr:false 按需加载，避免 tsparticles 拖慢首页 LCP（NFR-1）
+// 粒子经 dynamic + ssr:false 按需加载，避免拖慢首页 LCP（NFR-1）
 const ParticleBackground = dynamic(() => import("./ParticleBackground").then((m) => m.ParticleBackground), { ssr: false });
 
 export function Hero() {
