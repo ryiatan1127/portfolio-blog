@@ -1,4 +1,5 @@
 import { MDXRemote } from "next-mdx-remote-client/rsc";
+import type { PluggableList } from "unified";
 import rehypePrettyCode from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
 import { Pre } from "@/components/CodeBlock";
@@ -6,7 +7,11 @@ import { ProseP } from "@/components/ProseP";
 
 const options = {
   mdxOptions: {
-    rehypePlugins: [rehypeSlug, [rehypePrettyCode, { theme: "github-light", keepBackground: false }]],
+    // rehype-pretty-code 的 Options 类型与 unified Pluggable 元组类型不匹配，按 PluggableList 断言
+    rehypePlugins: [
+      rehypeSlug,
+      [rehypePrettyCode, { theme: "github-light", keepBackground: false }],
+    ] as PluggableList,
   },
 };
 
