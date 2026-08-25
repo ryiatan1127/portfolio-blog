@@ -1,28 +1,25 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import Particles, { initParticlesEngine } from "@tsparticles/react";
+import { useMemo } from "react";
+import { Particles, ParticlesProvider } from "@tsparticles/react";
+import type { ISourceOptions } from "@tsparticles/engine";
 import { loadSlim } from "@tsparticles/slim";
 import { useReducedMotion } from "motion/react";
 
 export function ParticleBackground({ className }: { className?: string }) {
-  const [ready, setReady] = useState(false);
   const reduce = useReducedMotion(); // prefers-reduced-motion：减弱动效时不初始化粒子引擎（NFR-3）
 
-  useEffect(() => {
-    if (reduce) return;
-    initParticlesEngine(async (engine) => { await loadSlim(engine); }).then(() => setReady(true));
-  }, [reduce]);
-
-  const options = useMemo(() => ({
+  // @tsparticles/react v4 API：ParticlesProvider init 回调一次性初始化引擎（模块级单例）
+  const options = useMemo<ISourceOptions>(() => ({
     fullScreen: { enable: false },
     fpsLimit: 60,
     detectRetina: true,
     interactivity: {
-      events: { onHover: { enable: true, mode: "grab" }, onClick: { enable: true, mode: "explode" } },
+      // slim 包不含 explode 点击模式（P0 退路）：改用内置的 push 模式
+      events: { onHover: { enable: true, mode: "grab" }, onClick: { enable: true, mode: "push" } },
       modes: {
         grab: { distance: 140, links: { opacity: 0.4 } },
-        explode: { distance: 120, quantity: 4, size: { min: 2, max: 4 } },
+        push: { quantity: 4 },
       },
     },
     particles: {
@@ -36,10 +33,12 @@ export function ParticleBackground({ className }: { className?: string }) {
   }), []);
 
   if (reduce) return <div aria-hidden className={className} />; // 减弱动效：纯静态背景（由 Hero 渐变兜底填充）
-  if (!ready) return null;
+
   return (
-    <div aria-hidden className={className}>
-      <Particles id="tsparticles" className="h-full w-full" options={options} />
-    </div>
+    <ParticlesProvider init={loadSlim}>
+      <div aria-hidden className={className}>
+        <Particles id="tsparticles" className="h-full w-full" options={options} />
+      </div>
+    </ParticlesProvider>
   );
 }
