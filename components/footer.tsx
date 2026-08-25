@@ -5,7 +5,7 @@ export function Footer() {
         <a href="https://github.com/YOUR_NAME" target="_blank" rel="noreferrer" className="hover:text-text">GitHub</a>
         <a href="mailto:YOU@example.com" className="hover:text-text">Email</a>
       </div>
-      <p className="mt-4">© {new Date().getFullYear()} 你的名字</p>
+      <p className="mt-4">© {new Date().getFullYear()} Ryia</p>
     </footer>
   );
 }

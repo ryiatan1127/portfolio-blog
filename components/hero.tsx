@@ -35,7 +35,7 @@ export function Hero() {
           transition={{ delay: 0.25 }}
           className="font-display mt-3 text-5xl font-bold tracking-tight sm:text-6xl"
         >
-          你的名字
+          Ryia
         </motion.h1>
         <motion.p
           initial={{ opacity: 0 }}
@@ -43,7 +43,7 @@ export function Hero() {
           transition={{ delay: 0.32 }}
           className="mt-2 text-xs uppercase tracking-[0.35em] text-text-muted"
         >
-          YOUR NAME
+          Ryia
         </motion.p>
         <motion.p
           initial={{ opacity: 0, y: 16 }}

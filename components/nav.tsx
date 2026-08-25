@@ -37,7 +37,7 @@ export function Nav() {
       }`}
     >
       <nav className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-        <Link href="/" className="font-display text-lg font-semibold" onClick={() => setOpen(false)}>你的名字</Link>
+        <Link href="/" className="font-display text-lg font-semibold" onClick={() => setOpen(false)}>Ryia</Link>
         <ul className="hidden items-center gap-6 text-sm text-text-muted md:flex">
           {links.map((l) => (
             <li key={l.href}>

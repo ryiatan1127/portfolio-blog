@@ -7,7 +7,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: { default: "你的名字 — 作品集", template: "%s | 你的名字" },
+  title: { default: "Ryia — 作品集", template: "%s | Ryia" },
   description: "个人作品集与博客：前端工程、独立开发与生活随笔。",
   openGraph: { type: "website", locale: "zh_CN" },
 };
