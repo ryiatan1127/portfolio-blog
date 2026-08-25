@@ -1,6 +1,6 @@
 # 个人作品集 + 博客
 
-Next.js + Motion + tsparticles + MDX 的静态站点。多巴胺低饱和 + 轻亚风格，滚动叙事 / 粒子微交互 / 玻璃拟态卡片，博客含标签、目录、归档、系列、搜索、评论等功能，$0 起步托管。
+Next.js + Motion + tsparticles + MDX 的静态站点。多巴胺低饱和 + 轻亚风格，滚动叙事 / 粒子微交互 / 玻璃拟态卡片，博客含标签、目录、归档、系列、搜索等功能，$0 起步托管。
 
 ## 开发
 
@@ -36,10 +36,6 @@ npm test        # Vitest 单测
 - 项目：`content/projects.ts`
 - 经历时间线：`content/timeline.ts`
 - 图片：`public/images/`，以 `/images/...` 引用
-
-## 评论
-
-Giscus 配置见 `components/Comments.tsx`：先在 GitHub 仓库 Settings → General 开启 Discussions，再到 giscus.app 生成 `repoId`/`categoryId` 替换占位值。
 
 ## 本机 npm 源（可选）
 

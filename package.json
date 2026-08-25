@@ -13,7 +13,6 @@
     "predev": "node scripts/build-search-index.mjs"
   },
   "dependencies": {
-    "@giscus/react": "^3.1.0",
     "@tsparticles/react": "^4.3.2",
     "@tsparticles/slim": "^4.3.2",
     "github-slugger": "^2.0.0",

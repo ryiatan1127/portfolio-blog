@@ -5,7 +5,7 @@
 
 ## 1. 目标
 
-构建一个**可上线**的个人作品集/品牌站 + 博客。React/Next 技术栈，具备**滚动叙事、粒子/微交互**动效；博客功能丰富（标签/目录/归档/系列/搜索/评论等）；视觉为**多巴胺低饱和 + 轻亚 + 可爱装饰元素**。核心约束**最经济**：托管 $0 起步，唯一可选支出是域名（~¥70/年）。
+构建一个**可上线**的个人作品集/品牌站 + 博客。React/Next 技术栈，具备**滚动叙事、粒子/微交互**动效；博客功能丰富（标签/目录/归档/系列/搜索等）；视觉为**多巴胺低饱和 + 轻亚 + 可爱装饰元素**。核心约束**最经济**：托管 $0 起步，唯一可选支出是域名（~¥70/年）。
 
 ## 2. 架构
 
@@ -13,7 +13,7 @@
 - **单一仓库**，作品集与博客共用一套框架、设计系统与动效组件。
 - **动效统一由 Motion 承担**，粒子由 tsparticles 承担。
 - **博客由 MDX + gray-matter 驱动**，静态生成所有文章页；**构建时生成搜索索引 JSON**，前端做客户端搜索（无后端）。
-- **评论用 Giscus**（GitHub Discussions 免费承载，无自建后端）。
+- **无后端、无数据库、无评论系统**（评论 Giscus 已按用户决定移除，2026-08-25）。
 
 ## 3. 技术栈
 
@@ -26,7 +26,6 @@
 | 博客 | `gray-matter` + `next-mdx-remote-client` | 最新 | frontmatter 解析 + MDX 渲染 |
 | 代码高亮 | `rehype-pretty-code` + `shiki` | 最新 | 行号 + 语言标注 + 主题 |
 | 标题锚点 | `rehype-slug` + `github-slugger` | 最新 | 为 TOC 生成稳定 id |
-| 评论 | `@giscus/react` | 最新 | GitHub Discussions 评论 |
 | 字体 | 自托管 `@font-face` 多格式声明（`public/fonts/`）+ 系统字体回退 | — | 展示字花哨、正文可读 |
 | 类型 | `@types/gray-matter` | — | gray-matter 无内置类型，缺失会致 TS 构建失败 |
 | 测试 | Vitest + @testing-library/react + jsdom | 最新 | 数据层单测 + 组件冒烟 |
@@ -41,7 +40,7 @@
 | `/` | Hero（头像/emoji + slogan + 粒子 + 装饰）+ 关于我 + 精选作品 + 精选文章 + 页脚 |
 | `/projects` | 完整作品集（玻璃卡片） |
 | `/blog` | 文章列表（可按标签筛选 + 搜索入口） |
-| `/blog/[slug]` | 文章页（MDX + 代码高亮 + TOC + 阅读进度 + 上一篇/下一篇 + 相关推荐 + 分享 + 评论） |
+| `/blog/[slug]` | 文章页（MDX + 代码高亮 + TOC + 阅读进度 + 上一篇/下一篇 + 相关推荐 + 分享） |
 | `/tags/[tag]` | 标签页：该标签下所有文章 |
 | `/archive` | 归档页：按年份聚合全部文章 |
 | `/series/[name]` | 系列页：同一系列文章 |
@@ -77,7 +76,6 @@ portfolio-blog/
 │   ├── PostNav.tsx           # 上一篇/下一篇
 │   ├── RelatedPosts.tsx
 │   ├── ShareButtons.tsx
-│   ├── Comments.tsx          # Giscus
 │   ├── SearchBox.tsx         # 客户端搜索
 │   └── decorations/
 │       ├── Wing.tsx / MusicNote.tsx / Star.tsx / Heart.tsx / Bubble.tsx
@@ -217,7 +215,6 @@ export const timeline: TimelineItem[] = [/* 经历条目 */];
 
 - 静态导出 → Vercel（Next 原生、免费）或 Cloudflare Pages（$0）。
 - 域名可选 ~¥70/年；不买则用免费子域名。
-- **评论 Giscus** 需一个 GitHub 公开仓库 + 开启 Discussions（一次性配置，免费）。
 - **总成本 $0 起步。**
 
 ### 10.1 SEO 与站点元数据
@@ -230,6 +227,7 @@ export const timeline: TimelineItem[] = [/* 经历条目 */];
 ## 11. 非目标（YAGNI）
 
 - ❌ 后端 / 数据库 / 用户系统 / CMS。
+- ❌ 评论（Giscus 已移除，2026-08-25 用户决定）。
 - ❌ 3D / WebGL（后续升级方向）。
 - ❌ 游戏化彩蛋（用户明确暂不做）。
 - ❌ 多语言、PWA、RSS（按需后续加）。

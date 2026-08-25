@@ -7,7 +7,6 @@ import { TableOfContents } from "@/components/TableOfContents";
 import { PostNav } from "@/components/PostNav";
 import { RelatedPosts } from "@/components/RelatedPosts";
 import { ShareButtons } from "@/components/ShareButtons";
-import { Comments } from "@/components/Comments";
 import { getAllPosts, getPostBySlug, getRelatedPosts, getPrevNextPost, readingTime, wordCount } from "@/lib/posts";
 import { extractHeadings } from "@/lib/headings";
 
@@ -54,7 +53,6 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         </div>
         <ShareButtons title={post.title} slug={slug} />
         <RelatedPosts posts={related} />
-        <Comments />
         <PostNav newer={newer} older={older} />
       </article>
     </>
