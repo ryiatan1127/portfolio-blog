@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+/* @font-face 同时声明三种格式：上传任一命名文件（display.woff2/ttf/otf）即用，无需改代码 */
+@font-face {
+  font-family: "Display";
+  src: url("/fonts/display.woff2") format("woff2"),
+       url("/fonts/display.ttf") format("truetype"),
+       url("/fonts/display.otf") format("opentype");
+  font-display: swap;
+}
+
+:root {
+  --font-display: "Display", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --bg: #faf6f2;
+  --bg-elevated: rgba(255, 255, 255, 0.55);
+  --text: #3d3a45;
+  --text-muted: #8b8794;
+  --accent: #d9a5c7;
+  --accent-2: #a5c8d9;
+  --accent-3: #c7d9a5;
+  --accent-4: #e0c9a5;
+  --border: rgba(61, 58, 69, 0.12);
+  --shadow-glow: 0 12px 32px -12px rgba(217, 165, 199, 0.5); /* 卡片 hover 发光（色值仅此处一处） */
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-3: var(--accent-3);
+  --color-accent-4: var(--accent-4);
+  --color-border: var(--border);
+  --font-display: var(--font-display);
+  --shadow-glow: var(--shadow-glow);
+}
+
+body {
+  font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: clip; /* 配合 Task 6 全出血 Hero（w-screen），防横向滚动条 */
+}
+
+/* 代码块行号（在代码围栏 meta 里加 `data-line-numbers` 启用） */
+code[data-line-numbers] { counter-reset: line; }
+code[data-line-numbers] > [data-line]::before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  width: 1.5rem;
+  margin-right: 1rem;
+  text-align: right;
+  color: var(--text-muted);
+  user-select: none;
+}
