@@ -5,10 +5,15 @@ import { useReducedMotion } from "motion/react";
 
 type RGB = { r: number; g: number; b: number };
 
-const BASE: RGB = { r: 217, g: 165, b: 199 }; // --accent 低饱和粉 #d9a5c7
-const GLOW: RGB = { r: 165, g: 200, b: 217 }; // --accent-2 低饱和蓝 #a5c8d9（光晕/染色色）
+// 四色多巴胺低饱和色板（与全局 --accent* token 一致）：粒子各取一色，颜色可辨认
+const PALETTE: RGB[] = [
+  { r: 217, g: 165, b: 199 }, // --accent 低饱和粉 #d9a5c7
+  { r: 165, g: 200, b: 217 }, // --accent-2 低饱和蓝 #a5c8d9
+  { r: 199, g: 217, b: 165 }, // --accent-3 低饱和绿 #c7d9a5
+  { r: 224, g: 201, b: 165 }, // --accent-4 低饱和奶油黄 #e0c9a5
+];
+const GLOW: RGB = { r: 165, g: 200, b: 217 }; // --accent-2 低饱和蓝（光晕/染色目标）
 
-const PARTICLE_COUNT = 40;
 const LINK_DIST = 120; // 粒子间连线距离
 const MOUSE_RADIUS = 140; // 光晕半径（= 染色范围）
 
@@ -19,6 +24,7 @@ type Particle = {
   vy: number;
   r: number;
   tint: number; // 0..1：被光晕染成淡蓝的程度（移开后缓慢回落 → 慢慢消散）
+  color: RGB; // 粒子本色（四色板随机取一）
 };
 
 export function ParticleBackground({ className }: { className?: string }) {
@@ -47,12 +53,15 @@ export function ParticleBackground({ className }: { className?: string }) {
       y: Math.random() * height,
       vx: (Math.random() - 0.5) * 0.8,
       vy: (Math.random() - 0.5) * 0.8,
-      r: 1 + Math.random() * 2,
+      r: 2 + Math.random() * 5,
       tint: 0,
+      color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
     });
 
     const init = () => {
-      particles = Array.from({ length: PARTICLE_COUNT }, spawn);
+      // 按可视面积计算粒子数：大屏不稀疏、小屏不过密（约每 12000px² 一个）
+      const count = Math.max(60, Math.min(200, Math.round((width * height) / 12000)));
+      particles = Array.from({ length: count }, spawn);
     };
 
     const resize = () => {
@@ -122,7 +131,7 @@ export function ParticleBackground({ className }: { className?: string }) {
       ctx.clearRect(0, 0, width, height);
 
       // 粒子间连线（近的连线更亮）
-      ctx.lineWidth = 1;
+      ctx.lineWidth = 2;
       for (let i = 0; i < particles.length; i++) {
         const a = particles[i];
         for (let j = i + 1; j < particles.length; j++) {
@@ -163,8 +172,8 @@ export function ParticleBackground({ className }: { className?: string }) {
 
       // 粒子：被光晕染色 → 颜色向淡蓝渐变，略微提亮
       for (const p of particles) {
-        ctx.fillStyle = mix(BASE, GLOW, p.tint);
-        ctx.globalAlpha = 0.4 + p.tint * 0.4;
+        ctx.fillStyle = mix(p.color, GLOW, p.tint);
+        ctx.globalAlpha = 0.6 + p.tint * 0.35;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fill();
