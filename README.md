@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 个人作品集 + 博客
 
-## Getting Started
+Next.js + Motion + tsparticles + MDX 的静态站点。多巴胺低饱和 + 轻亚风格，滚动叙事 / 粒子微交互 / 玻璃拟态卡片，博客含标签、目录、归档、系列、搜索、评论等功能，$0 起步托管。
 
-First, run the development server:
+## 开发
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run dev   # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> ⚠️ **搜索索引**：`predev` 会在启动时生成 `public/search-index.json`（构建产物，不入库）。dev 中新增/修改文章后需**重启 `npm run dev`**（或手动重跑 `node scripts/build-search-index.mjs`）索引才会刷新。
+>
+> ⚠️ **中文动态路由**：dev 模式下访问 `/tags/中文`、`/series/中文` 可能返回 500（Next.js `output: "export"` 下 dev 对非 ASCII params 的已知行为）；生产构建产物完全正常，以 `npm run build` 产物为准。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 构建
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build   # 产出 out/（prebuild 会先生成搜索索引、sitemap.xml、robots.txt）
+npm test        # Vitest 单测
+```
 
-## Learn More
+## 部署
 
-To learn more about Next.js, take a look at the following resources:
+- **Vercel**：导入仓库后自动识别 Next.js，直接 Deploy。
+- **Cloudflare Pages**：Build command `npm run build`，输出目录 `out`。
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+部署后把 `lib/site.ts` 的 `SITE_URL` 替换为真实域名（sitemap / OG 元数据共用），重新部署。
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 字体
 
-## Deploy on Vercel
+把展示字体命名为 `public/fonts/display.woff2`（或 `display.ttf` / `display.otf`，任选其一）即可在标题/Hero 使用，无需改代码。`@font-face` 已同时声明三种格式；展示字体主要作用于拉丁字符，中文标题回退系统字体。
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 内容
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- 文章：`content/posts/*.mdx`（frontmatter 见 requirements.md §5.1；文件名用 ASCII slug；`draft: true` 不发布）
+- 项目：`content/projects.ts`
+- 经历时间线：`content/timeline.ts`
+- 图片：`public/images/`，以 `/images/...` 引用
+
+## 评论
+
+Giscus 配置见 `components/Comments.tsx`：先在 GitHub 仓库 Settings → General 开启 Discussions，再到 giscus.app 生成 `repoId`/`categoryId` 替换占位值。
+
+## 本机 npm 源（可选）
+
+本机直连 npmjs 不可达时，npm 已配置为 `https://registry.npmmirror.com` 并经本地代理（`127.0.0.1:7897`）访问：
+
+```bash
+npm config set registry https://registry.npmmirror.com
+npm config set proxy http://127.0.0.1:7897
+npm config set https-proxy http://127.0.0.1:7897
+```
+
+> `@types/gray-matter` 在 npmmirror 上未同步时，仓库内置了最小类型声明 `types/gray-matter.d.ts`，无需额外安装。

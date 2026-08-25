@@ -40,7 +40,7 @@
 - Consumes: 无
 - Produces: 可 `npm run dev` / `npm run build` / `npm test` 的骨架。
 
-- [ ] **Step 1: 生成 Next.js 15 项目**
+- [x] **Step 1: 生成 Next.js 15 项目**
 
 在**仓库根目录**（即本文件所在目录，已含三份 md 文档）直接生成，避免 `portfolio-blog/portfolio-blog` 双层嵌套：
 
@@ -52,14 +52,14 @@ npx create-next-app@15 . --typescript --tailwind --eslint --app --import-alias "
 > 若 `--no-src-dir` 不被识别，去掉该 flag；默认不使用 src/（如交互询问 src 目录，选 No）。
 > **agentic 执行注意（P0）**：create-next-app 的交互询问（Turbopack、src 目录等）会阻塞非交互执行——用 flag 全量指定选项（如 `--turbopack` / `--no-turbopack`、`--import-alias "@/*"`、`--use-npm`），或在管道中应答全部提示，避免挂起。
 
-- [ ] **Step 2: 验证骨架与 Tailwind 版本**
+- [x] **Step 2: 验证骨架与 Tailwind 版本**
 
 ```bash
 ls -1   # 应有 app/ public/ package.json tsconfig.json next.config.ts（md 文档保留）
 npm ls tailwindcss   # 期望 v4；若为 v3，先升级到 v4：npm i -D tailwindcss@4 @tailwindcss/postcss，并按 v4 文档配 postcss.config.mjs
 ```
 
-- [ ] **Step 3: 安装运行时依赖**
+- [x] **Step 3: 安装运行时依赖**
 
 ```bash
 npm install motion @tsparticles/react @tsparticles/slim gray-matter next-mdx-remote-client rehype-pretty-code shiki rehype-slug github-slugger @giscus/react
@@ -67,7 +67,7 @@ npm install motion @tsparticles/react @tsparticles/slim gray-matter next-mdx-rem
 
 > **版本矩阵（P0，安装时核实）**：`rehype-pretty-code` 与 `shiki` 必须使用互相兼容的组合（评审日：rehype-pretty-code 0.14.x ↔ shiki ^1.x；shiki v2/v4 兼容仍在跟进，勿直接装 latest）。若 `npm install` 报 ERESOLVE，按 `npm view rehype-pretty-code peerDependencies` 的声明范围降级 shiki 后重装。`@tsparticles/react`（≥4 支持 React 19）、`@giscus/react`、`@testing-library/react`（≥16）须与 Next 15 自带的 React 19 peer 兼容，冲突时同样锁定兼容版本；全部以 `package-lock.json` 锁定并提交。
 
-- [ ] **Step 4: 安装测试依赖**
+- [x] **Step 4: 安装测试依赖**
 
 ```bash
 npm install -D vitest @vitejs/plugin-react @testing-library/react @testing-library/jest-dom @testing-library/user-event jsdom @types/gray-matter
@@ -75,7 +75,7 @@ npm install -D vitest @vitejs/plugin-react @testing-library/react @testing-libra
 
 > `@types/gray-matter`：gray-matter 无内置类型，缺失会导致 `matter(raw)` 在 strict 下报 TS7016、构建失败。
 
-- [ ] **Step 5: 配置静态导出（改写 `next.config.ts`）**
+- [x] **Step 5: 配置静态导出（改写 `next.config.ts`）**
 
 ```ts
 import type { NextConfig } from "next";
@@ -88,7 +88,7 @@ const nextConfig: NextConfig = {
 export default nextConfig;
 ```
 
-- [ ] **Step 6: 写 Vitest 配置**
+- [x] **Step 6: 写 Vitest 配置**
 
 `vitest.config.ts`：
 
@@ -120,7 +120,7 @@ class MockIntersectionObserver implements IntersectionObserver {
 globalThis.IntersectionObserver = MockIntersectionObserver as unknown as typeof IntersectionObserver;
 ```
 
-- [ ] **Step 7: 加脚本（`package.json` 的 scripts）**
+- [x] **Step 7: 加脚本（`package.json` 的 scripts）**
 
 ```json
 "test": "vitest run",
@@ -129,7 +129,7 @@ globalThis.IntersectionObserver = MockIntersectionObserver as unknown as typeof 
 "predev": "node scripts/build-search-index.mjs"
 ```
 
-- [ ] **Step 8: 建占位搜索脚本（创建 `scripts/build-search-index.mjs`）**
+- [x] **Step 8: 建占位搜索脚本（创建 `scripts/build-search-index.mjs`）**
 
 ```js
 import fs from "fs";
@@ -142,7 +142,7 @@ fs.writeFileSync(out, "[]");
 
 > Task 19 会替换为真实实现；此处仅为让 `prebuild`/`predev` 可运行。
 
-- [ ] **Step 9: tsconfig 排除测试文件（修改 `tsconfig.json`）**
+- [x] **Step 9: tsconfig 排除测试文件（修改 `tsconfig.json`）**
 
 create-next-app 的 tsconfig 会把 `**/*.ts(x)` 全部纳入 `next build` 类型检查，导致测试文件及其 jest-dom matcher 类型参与构建；在 `exclude` 中排除：
 
@@ -152,7 +152,7 @@ create-next-app 的 tsconfig 会把 `**/*.ts(x)` 全部纳入 `next build` 类�
 
 > Vitest 由 `vitest.config.ts` 驱动，不受该 exclude 影响，`npm test` 照常运行。
 
-- [ ] **Step 10: 验证构建**
+- [x] **Step 10: 验证构建**
 
 ```bash
 npm run build
@@ -162,7 +162,7 @@ npm run build
 
 > 首次构建即验证依赖组合无冲突；Task 12 首次渲染代码块时再确认高亮与行号，若异常回本步按版本矩阵调整（P0）。
 
-- [ ] **Step 11: Commit**
+- [x] **Step 11: Commit**
 
 ```bash
 git init   # 若尚未初始化
@@ -183,7 +183,7 @@ git add -A && git commit -m "chore: scaffold Next.js portfolio with static expor
 - Consumes: Task 1 骨架
 - Produces: `<Nav />`（含移动端汉堡菜单）、`<Footer />`；全局 token（`--bg/--bg-elevated/--text/--text-muted/--accent/--accent-2/--accent-3/--accent-4/--border/--font-display`）；`SITE_URL` 常量；预留 `public/fonts/`。
 
-- [ ] **Step 1: 写主题 token 与 @font-face（改写 `app/globals.css`）**
+- [x] **Step 1: 写主题 token 与 @font-face（改写 `app/globals.css`）**
 
 ```css
 @import "tailwindcss";
@@ -236,7 +236,7 @@ body {
 > 不使用 `next/font/google`：其构建时需联网下载字体，网络受限会卡住/失败；正文用系统字体栈，展示字体全走自托管。
 > 若不需要 `.ttf/.otf` 支持，可只保留 woff2 一行 src，避免缺失文件产生 404 请求。
 
-- [ ] **Step 2: 写字体说明（创建 `public/fonts/README.md`）**
+- [x] **Step 2: 写字体说明（创建 `public/fonts/README.md`）**
 
 ```markdown
 # 自定义字体目录
@@ -246,7 +246,7 @@ body {
 `@font-face` 已同时声明三种格式，浏览器按 woff2 → ttf → otf 顺序加载存在的文件。
 ```
 
-- [ ] **Step 3: 写导航（创建 `components/nav.tsx`，含移动端汉堡菜单）**
+- [x] **Step 3: 写导航（创建 `components/nav.tsx`，含移动端汉堡菜单）**
 
 ```tsx
 "use client";
@@ -330,7 +330,7 @@ export function Nav() {
 
 > 移动端（<`768px`，断点 `md:`）横向链接隐藏，显示汉堡按钮；菜单展开时点击链接自动收起（FR-5.5）；Esc 键关闭菜单（P2）；`aria-controls="mobile-menu"` 关联菜单（a11y）。
 
-- [ ] **Step 4: 写页脚（创建 `components/footer.tsx`）**
+- [x] **Step 4: 写页脚（创建 `components/footer.tsx`）**
 
 ```tsx
 export function Footer() {
@@ -346,7 +346,7 @@ export function Footer() {
 }
 ```
 
-- [ ] **Step 5: 站点常量 + 改写根布局（创建 `lib/site.ts`，修改 `app/layout.tsx`）**
+- [x] **Step 5: 站点常量 + 改写根布局（创建 `lib/site.ts`，修改 `app/layout.tsx`）**
 
 `lib/site.ts`：
 
@@ -387,7 +387,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 > 正文与展示字体由 `globals.css` 统一声明，不再使用 `next/font/google`（Task 2 Step 1 说明）。
 
-- [ ] **Step 6: 验证**
+- [x] **Step 6: 验证**
 
 ```bash
 npm run dev
@@ -395,7 +395,7 @@ npm run dev
 
 打开 http://localhost:3000 ，确认导航（含归档/搜索链接）、页脚渲染；滚动导航出现玻璃背景；缩窄视口到 <768px 出现汉堡按钮，点击可展开全部导航项。
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add -A && git commit -m "feat: add theme tokens, fonts, nav (with mobile menu) and footer"
@@ -412,7 +412,7 @@ git add -A && git commit -m "feat: add theme tokens, fonts, nav (with mobile men
 **Interfaces:**
 - Produces: `ScrollReveal({ children, delay?, y?, className? })`、`SectionHeading({ eyebrow, title, as? })`（均为**命名导出**）。
 
-- [ ] **Step 1: 写失败测试（创建 `components/ScrollReveal.test.tsx`）**
+- [x] **Step 1: 写失败测试（创建 `components/ScrollReveal.test.tsx`）**
 
 ```tsx
 import { render, screen } from "@testing-library/react";
@@ -427,7 +427,7 @@ describe("ScrollReveal", () => {
 });
 ```
 
-- [ ] **Step 2: 运行确认失败**
+- [x] **Step 2: 运行确认失败**
 
 ```bash
 npm test -- ScrollReveal
@@ -435,7 +435,7 @@ npm test -- ScrollReveal
 
 预期：FAIL（`Cannot find module './ScrollReveal'`）。
 
-- [ ] **Step 3: 实现（创建 `components/ScrollReveal.tsx`）**
+- [x] **Step 3: 实现（创建 `components/ScrollReveal.tsx`）**
 
 ```tsx
 "use client";
@@ -463,13 +463,13 @@ export function ScrollReveal({ children, delay = 0, y = 24, className }: Props) 
 
 > 尊重 `prefers-reduced-motion`：系统开启「减弱动效」时退化为纯淡入、无位移。
 
-- [ ] **Step 4: 运行确认通过**
+- [x] **Step 4: 运行确认通过**
 
 ```bash
 npm test -- ScrollReveal
 ```
 
-- [ ] **Step 5: 实现 SectionHeading（创建 `components/SectionHeading.tsx`）**
+- [x] **Step 5: 实现 SectionHeading（创建 `components/SectionHeading.tsx`）**
 
 ```tsx
 import { ScrollReveal } from "./ScrollReveal";
@@ -489,7 +489,7 @@ export function SectionHeading({ eyebrow, title, as = "h2" }: Props) {
 
 > `as="h1"` 供页面级标题使用（验收标准 8：每页唯一 h1）；区块标题保持 h2。
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add -A && git commit -m "feat: add ScrollReveal and SectionHeading primitives"
@@ -505,7 +505,7 @@ git add -A && git commit -m "feat: add ScrollReveal and SectionHeading primitive
 **Interfaces:**
 - Produces: `ParticleBackground({ className? })`（命名导出；由 Hero 经 `next/dynamic` 按需加载）。
 
-- [ ] **Step 1: 实现**
+- [x] **Step 1: 实现**
 
 ```tsx
 "use client";
@@ -557,7 +557,7 @@ export function ParticleBackground({ className }: { className?: string }) {
 
 > 点击使用 `explode` 爆裂模式（FR-4.2「点击爆粒子」）；组件本身经 `next/dynamic`（`ssr: false`）加载，见 Task 6。
 
-- [ ] **Step 2: 验证 + Commit**
+- [x] **Step 2: 验证 + Commit**
 
 ```bash
 npm run dev   # 无报错；Hero 接入后验证点击爆裂
@@ -577,7 +577,7 @@ git add -A && git commit -m "feat: add tsparticles background component"
 **Interfaces:**
 - Produces: `<Wing/>`、`<MusicNote/>`、`<Star/>`、`<Heart/>`、`<Bubble/>`（各接受 `className?`，纯 SVG，`aria-hidden`）。
 
-- [ ] **Step 1: 实现五个装饰组件**
+- [x] **Step 1: 实现五个装饰组件**
 
 `components/decorations/Wing.tsx`：
 
@@ -652,7 +652,7 @@ export { Heart } from "./Heart";
 export { Bubble } from "./Bubble";
 ```
 
-- [ ] **Step 2: 验证 + Commit**
+- [x] **Step 2: 验证 + Commit**
 
 ```bash
 npm run dev   # 无报错
@@ -671,7 +671,7 @@ git add -A && git commit -m "feat: add cute decorative SVG elements"
 - Consumes: `ParticleBackground`（dynamic 加载）、`decorations/*`
 - Produces: `<Hero />`。
 
-- [ ] **Step 1: 实现 Hero**
+- [x] **Step 1: 实现 Hero**
 
 ```tsx
 "use client";
@@ -737,7 +737,7 @@ export function Hero() {
 
 > **全出血（P1）**：`left-1/2 -ml-[50vw] w-screen` 使 Hero 无视 `main` 的 `max-w-5xl` 约束铺满视口（配合 Task 2 的 `body { overflow-x: clip }` 防横向滚动条）。粒子就绪前由渐变兜底填充，不闪空背景；`prefers-reduced-motion` 开启时粒子层渲染为空、渐变兜底保持氛围。英文名副标（拉丁字符）命中展示字体 `font-display`，中文回退系统字体（验收标准 9）。
 
-- [ ] **Step 2: 首页接入（改写 `app/page.tsx`）**
+- [x] **Step 2: 首页接入（改写 `app/page.tsx`）**
 
 ```tsx
 import { Hero } from "@/components/hero";
@@ -747,7 +747,7 @@ export default function Home() {
 }
 ```
 
-- [ ] **Step 3: 验证 + Commit**
+- [x] **Step 3: 验证 + Commit**
 
 ```bash
 npm run dev   # Hero 居中、头像圆框、粒子、装饰元素、slogan；点击粒子爆裂
@@ -765,7 +765,7 @@ git add -A && git commit -m "feat: add hero with avatar, slogan, particles and d
 **Interfaces:**
 - Produces: `timeline` 数据（`content/timeline.ts`，类型 `TimelineItem`）；`<About />` 读取数据渲染时间线。
 
-- [ ] **Step 1: 经历数据（创建 `content/timeline.ts`，与组件分离，NFR-4）**
+- [x] **Step 1: 经历数据（创建 `content/timeline.ts`，与组件分离，NFR-4）**
 
 ```ts
 export type TimelineItem = { year: string; text: string };
@@ -778,7 +778,7 @@ export const timeline: TimelineItem[] = [
 ];
 ```
 
-- [ ] **Step 2: 实现 About（创建 `components/about.tsx`）**
+- [x] **Step 2: 实现 About（创建 `components/about.tsx`）**
 
 ```tsx
 import { ScrollReveal } from "./ScrollReveal";
@@ -804,7 +804,7 @@ export function About() {
 }
 ```
 
-- [ ] **Step 3: 首页接入**
+- [x] **Step 3: 首页接入**
 
 `app/page.tsx`：
 
@@ -817,7 +817,7 @@ export default function Home() {
 }
 ```
 
-- [ ] **Step 4: 验证 + Commit**
+- [x] **Step 4: 验证 + Commit**
 
 ```bash
 npm run dev   # 验证后 Ctrl+C 退出（dev server 不会自行退出，勿与 commit 用 && 串联）
@@ -835,7 +835,7 @@ git add -A && git commit -m "feat: add about section with scroll-reveal timeline
 **Interfaces:**
 - Produces: `content/projects.ts` 导出 `Project` 类型与 `projects`；`lib/projects.ts` 导出 `getAllProjects()`、`getFeaturedProjects()`；`ProjectCard({ project })`。
 
-- [ ] **Step 1: 项目数据（创建 `content/projects.ts`）**
+- [x] **Step 1: 项目数据（创建 `content/projects.ts`）**
 
 ```ts
 export type Project = {
@@ -870,7 +870,7 @@ export const projects: Project[] = [
 
 > 首期 2 个项目（1 featured + 1 非 featured），对应需求 §5.3；无截图项目由卡片渐变占位。
 
-- [ ] **Step 2: 失败测试（创建 `lib/projects.test.ts`）**
+- [x] **Step 2: 失败测试（创建 `lib/projects.test.ts`）**
 
 ```tsx
 import { describe, it, expect } from "vitest";
@@ -882,13 +882,13 @@ describe("projects", () => {
 });
 ```
 
-- [ ] **Step 3: 运行确认失败**
+- [x] **Step 3: 运行确认失败**
 
 ```bash
 npm test -- projects
 ```
 
-- [ ] **Step 4: 实现查询函数（创建 `lib/projects.ts`）**
+- [x] **Step 4: 实现查询函数（创建 `lib/projects.ts`）**
 
 ```ts
 import { projects, type Project } from "@/content/projects";
@@ -897,13 +897,13 @@ export function getAllProjects(): Project[] { return projects; }
 export function getFeaturedProjects(): Project[] { return projects.filter((p) => p.featured); }
 ```
 
-- [ ] **Step 5: 运行确认通过**
+- [x] **Step 5: 运行确认通过**
 
 ```bash
 npm test -- projects
 ```
 
-- [ ] **Step 6: 玻璃卡片（创建 `components/ProjectCard.tsx`）**
+- [x] **Step 6: 玻璃卡片（创建 `components/ProjectCard.tsx`）**
 
 ```tsx
 "use client";
@@ -942,7 +942,7 @@ export function ProjectCard({ project }: { project: Project }) {
 }
 ```
 
-- [ ] **Step 7: 验证 + Commit**
+- [x] **Step 7: 验证 + Commit**
 
 ```bash
 npm run dev   # 验证后 Ctrl+C 退出
@@ -956,7 +956,7 @@ git add -A && git commit -m "feat: add projects data layer and glassmorphism car
 **Files:**
 - Create: `app/projects/page.tsx`
 
-- [ ] **Step 1: 实现页面**
+- [x] **Step 1: 实现页面**
 
 ```tsx
 import type { Metadata } from "next";
@@ -987,7 +987,7 @@ export default function ProjectsPage() {
 
 > `as="h1"`：页面级唯一 h1（验收标准 8）；SEO metadata（FR-5.3）。
 
-- [ ] **Step 2: 验证 + Commit**
+- [x] **Step 2: 验证 + Commit**
 
 ```bash
 npm run dev   # 打开 /projects 确认玻璃卡片网格
@@ -1005,7 +1005,7 @@ git add -A && git commit -m "feat: add projects listing page"
 **Interfaces:**
 - Produces（后续任务严格沿用）：`PostMeta`、`Post`、`getAllPosts()`、`getPostBySlug(slug)`（不存在或 draft 返回 `undefined`）、`getAllTags()`、`getPostsByTag(tag)`、`getAllSeries()`、`getPostsBySeries(name)`、`getRelatedPosts(slug, n?)`、`getPrevNextPost(slug)`、`wordCount(content)`、`readingTime(content)`。
 
-- [ ] **Step 1: 示例文章（3 篇，对应需求 §5.3：2 篇共享标签 + 同一系列 + 1 篇草稿）**
+- [x] **Step 1: 示例文章（3 篇，对应需求 §5.3：2 篇共享标签 + 同一系列 + 1 篇草稿）**
 
 `content/posts/hello-world.mdx`：
 
@@ -1067,7 +1067,7 @@ draft: true 的文章不应出现在列表、搜索索引与静态产物中。
 
 > 文章文件名用 ASCII slug（文件名即 URL）。
 
-- [ ] **Step 2: 失败测试（创建 `lib/posts.test.ts`）**
+- [x] **Step 2: 失败测试（创建 `lib/posts.test.ts`）**
 
 ```tsx
 import { describe, it, expect } from "vitest";
@@ -1122,13 +1122,13 @@ describe("posts", () => {
 });
 ```
 
-- [ ] **Step 3: 运行确认失败**
+- [x] **Step 3: 运行确认失败**
 
 ```bash
 npm test -- posts
 ```
 
-- [ ] **Step 4: 实现纯文本工具（创建 `lib/plaintext.ts`）**
+- [x] **Step 4: 实现纯文本工具（创建 `lib/plaintext.ts`）**
 
 ```ts
 // 剥离 Markdown 语法 → 纯文本：wordCount（阅读字数）与搜索索引（Task 19）共用同一逻辑
@@ -1143,7 +1143,7 @@ export function toPlainText(md: string): string {
 }
 ```
 
-- [ ] **Step 5: 实现数据层（创建 `lib/posts.ts`）**
+- [x] **Step 5: 实现数据层（创建 `lib/posts.ts`）**
 
 ```ts
 import fs from "fs";
@@ -1249,13 +1249,13 @@ export function readingTime(content: string): number {
 }
 ```
 
-- [ ] **Step 6: 运行确认通过**
+- [x] **Step 6: 运行确认通过**
 
 ```bash
 npm test -- posts
 ```
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add -A && git commit -m "feat: add posts data layer with tags, series, related, prev-next, reading time"
@@ -1273,7 +1273,7 @@ git add -A && git commit -m "feat: add posts data layer with tags, series, relat
 - Consumes: `getAllPosts`、`getAllTags`
 - Produces: `BlogCard({ post })`（含封面渲染）；`/blog` 路由。
 
-- [ ] **Step 1: 文章卡片（创建 `components/BlogCard.tsx`）**
+- [x] **Step 1: 文章卡片（创建 `components/BlogCard.tsx`）**
 
 ```tsx
 "use client";
@@ -1304,7 +1304,7 @@ export function BlogCard({ post }: { post: PostMeta }) {
 }
 ```
 
-- [ ] **Step 2: 列表页（创建 `app/blog/page.tsx`）**
+- [x] **Step 2: 列表页（创建 `app/blog/page.tsx`）**
 
 ```tsx
 import type { Metadata } from "next";
@@ -1344,7 +1344,7 @@ export default function BlogPage() {
 }
 ```
 
-- [ ] **Step 3: 验证 + Commit**
+- [x] **Step 3: 验证 + Commit**
 
 ```bash
 npm run dev   # /blog 列表 + 标签栏
@@ -1361,7 +1361,7 @@ git add -A && git commit -m "feat: add blog listing page with tag filter links"
 **Interfaces:**
 - Produces: `MdxContent({ source })`（含代码高亮、标题锚点、复制按钮、完整正文排版）。
 
-- [ ] **Step 1: 复制按钮客户端组件（创建 `components/CodeBlock.tsx`）**
+- [x] **Step 1: 复制按钮客户端组件（创建 `components/CodeBlock.tsx`）**
 
 ```tsx
 "use client";
@@ -1392,7 +1392,7 @@ export function Pre(props: PreProps) {
 }
 ```
 
-- [ ] **Step 2: 段落滚动淡入（FR-3.6，创建 `components/ProseP.tsx`）**
+- [x] **Step 2: 段落滚动淡入（FR-3.6，创建 `components/ProseP.tsx`）**
 
 ```tsx
 "use client";
@@ -1418,7 +1418,7 @@ export function ProseP(props: HTMLAttributes<HTMLParagraphElement>) {
 
 > 若后续评审决定正文完全不动效：删除该组件、`p` 映射改回静态 `<p>`，并在 requirements.md FR-3.6 标注降级为「仅文章头部淡入」。
 
-- [ ] **Step 3: MDX 封装（创建 `lib/mdx.tsx`）**
+- [x] **Step 3: MDX 封装（创建 `lib/mdx.tsx`）**
 
 ```tsx
 import { MDXRemote } from "next-mdx-remote-client/rsc";
@@ -1461,7 +1461,7 @@ export function MdxContent({ source }: { source: string }) {
 
 > 标题锚点加 `scroll-mt-24`，目录跳转不被固定导航遮挡；补齐 blockquote/table/hr/img 排版（长文不出现裸元素）。
 
-- [ ] **Step 4: 行号 + 语言标注样式（在 `app/globals.css` 末尾追加）**
+- [x] **Step 4: 行号 + 语言标注样式（在 `app/globals.css` 末尾追加）**
 
 ```css
 /* 代码块行号（在代码围栏 meta 里加 `data-line-numbers` 启用） */
@@ -1481,7 +1481,7 @@ code[data-line-numbers] > [data-line]::before {
 > 语言标注（`js`/`ts` 等）已由 `Pre` 组件读取 `data-language` 渲染在代码块左上角；行号在需要时于围栏加 `data-line-numbers`，例如 ` ```js data-line-numbers `。
 > ⚠️ 该 meta 写法随 `rehype-pretty-code` 版本变化（v0.14+ 对围栏 meta 的解析有调整）：安装后先写一篇带行号的文章验证，若行号不生效，按所装版本的文档改用 `showLineNumbers` 等 meta 并同步调整本步骤 CSS（版本组合已在 Task 1 锁定；若仍异常，回 Task 1 Step 3 按版本矩阵调整）。
 
-- [ ] **Step 5: 验证 + Commit**
+- [x] **Step 5: 验证 + Commit**
 
 ```bash
 npm run dev   # 验证后 Ctrl+C 退出
@@ -1496,7 +1496,7 @@ git add -A && git commit -m "feat: add MDX rendering with code highlighting and 
 - Create: `components/ReadingProgress.tsx`
 - Create: `app/blog/[slug]/page.tsx`
 
-- [ ] **Step 1: 阅读进度条（创建 `components/ReadingProgress.tsx`）**
+- [x] **Step 1: 阅读进度条（创建 `components/ReadingProgress.tsx`）**
 
 ```tsx
 "use client";
@@ -1510,7 +1510,7 @@ export function ReadingProgress() {
 }
 ```
 
-- [ ] **Step 2: 文章页（创建 `app/blog/[slug]/page.tsx`）**
+- [x] **Step 2: 文章页（创建 `app/blog/[slug]/page.tsx`）**
 
 ```tsx
 import { notFound } from "next/navigation";
@@ -1548,14 +1548,14 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 }
 ```
 
-- [ ] **Step 3: 验证**
+- [x] **Step 3: 验证**
 
 ```bash
 npm run dev   # 打开 /blog/hello-world，标题、代码高亮、进度条、阅读时长正常；/blog/draft-post 应 404
 npm run build # 构建成功，out/blog/hello-world/index.html 已生成，out 中不含 draft-post
 ```
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add -A && git commit -m "feat: add blog post page with MDX, reading progress and reading time"
@@ -1574,7 +1574,7 @@ git add -A && git commit -m "feat: add blog post page with MDX, reading progress
 - Consumes: `getPostBySlug`、`getRelatedPosts`、`getPrevNextPost`
 - Produces: `extractHeadings(content)`、`<TableOfContents headings>`、`<PostNav newer? older?>`、`<RelatedPosts posts>`、`<ShareButtons title slug>`。
 
-- [ ] **Step 1: 失败测试（创建 `lib/headings.test.ts`）**
+- [x] **Step 1: 失败测试（创建 `lib/headings.test.ts`）**
 
 ```tsx
 import { describe, it, expect } from "vitest";
@@ -1600,13 +1600,13 @@ describe("extractHeadings", () => {
 });
 ```
 
-- [ ] **Step 2: 运行确认失败**
+- [x] **Step 2: 运行确认失败**
 
 ```bash
 npm test -- headings
 ```
 
-- [ ] **Step 3: 实现（创建 `lib/headings.ts`）**
+- [x] **Step 3: 实现（创建 `lib/headings.ts`）**
 
 ```ts
 import GithubSlugger from "github-slugger";
@@ -1627,13 +1627,13 @@ export function extractHeadings(content: string): Heading[] {
 
 > 与 `rehype-slug` 共用 `github-slugger`，生成的锚点 id 一致（中文标题两者均原样保留）。
 
-- [ ] **Step 4: 运行确认通过**
+- [x] **Step 4: 运行确认通过**
 
 ```bash
 npm test -- headings
 ```
 
-- [ ] **Step 5: 实现 TOC（创建 `components/TableOfContents.tsx`）**
+- [x] **Step 5: 实现 TOC（创建 `components/TableOfContents.tsx`）**
 
 ```tsx
 "use client";
@@ -1670,7 +1670,7 @@ export function TableOfContents({ headings }: { headings: Heading[] }) {
 }
 ```
 
-- [ ] **Step 6: 实现上一篇/下一篇（创建 `components/PostNav.tsx`）**
+- [x] **Step 6: 实现上一篇/下一篇（创建 `components/PostNav.tsx`）**
 
 ```tsx
 import Link from "next/link";
@@ -1686,7 +1686,7 @@ export function PostNav({ newer, older }: { newer?: PostMeta; older?: PostMeta }
 }
 ```
 
-- [ ] **Step 7: 实现相关推荐（创建 `components/RelatedPosts.tsx`）**
+- [x] **Step 7: 实现相关推荐（创建 `components/RelatedPosts.tsx`）**
 
 ```tsx
 import Link from "next/link";
@@ -1710,7 +1710,7 @@ export function RelatedPosts({ posts }: { posts: PostMeta[] }) {
 }
 ```
 
-- [ ] **Step 8: 实现分享按钮（创建 `components/ShareButtons.tsx`）**
+- [x] **Step 8: 实现分享按钮（创建 `components/ShareButtons.tsx`）**
 
 ```tsx
 "use client";
@@ -1739,7 +1739,7 @@ export function ShareButtons({ title, slug }: { title: string; slug: string }) {
 }
 ```
 
-- [ ] **Step 9: 文章页接入（修改 `app/blog/[slug]/page.tsx`）**
+- [x] **Step 9: 文章页接入（修改 `app/blog/[slug]/page.tsx`）**
 
 > 同时把 Task 13 里的 `<article className="mx-auto max-w-2xl py-32">` 改为 `max-w-4xl`，正文内容用 `max-w-prose` 收窄（NFR-5 正文宽度受限），给右侧 TOC 让出空间。
 > **标题约定（P1）**：首期文章标题保持纯文本（不含链接/行内代码），保证 `extractHeadings` 与 `rehype-slug` 的锚点 id 一致（差异用例见 Step 1 测试）。
@@ -1775,7 +1775,7 @@ const { newer, older } = getPrevNextPost(slug);
 <PostNav newer={newer} older={older} />
 ```
 
-- [ ] **Step 10: 验证 + Commit**
+- [x] **Step 10: 验证 + Commit**
 
 ```bash
 npm run dev   # /blog/hello-world 出现目录、分享、相关、前后篇；点目录跳转标题不被导航遮挡
@@ -1793,7 +1793,7 @@ git add -A && git commit -m "feat: add TOC, prev-next, related and share to post
 **Interfaces:**
 - Produces: `<Comments />`（Giscus 嵌入，占位配置，用户替换为自己的仓库参数）。
 
-- [ ] **Step 1: 实现 Comments**
+- [x] **Step 1: 实现 Comments**
 
 ```tsx
 "use client";
@@ -1824,15 +1824,15 @@ export function Comments() {
 
 > `theme` 目前写死 `"light"`：未来加暗色主题时改为 `"dark"`/`"auto"` 并与主题切换联动。
 
-- [ ] **Step 2: 文章页接入**
+- [x] **Step 2: 文章页接入**
 
 在 `<RelatedPosts posts={related} />` 之后补 `<Comments />` 及导入。
 
-- [ ] **Step 3: 记录待办**
+- [x] **Step 3: 记录待办**
 
 > ⚠️ `repoId`/`categoryId` 需用户到 giscus.app 生成（先在 GitHub 仓库 Settings → General 开启 Discussions）。在 `README.md` 中注明。
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add -A && git commit -m "feat: add Giscus comments component"
@@ -1845,7 +1845,7 @@ git add -A && git commit -m "feat: add Giscus comments component"
 **Files:**
 - Create: `app/tags/[tag]/page.tsx`
 
-- [ ] **Step 1: 实现**
+- [x] **Step 1: 实现**
 
 ```tsx
 import type { Metadata } from "next";
@@ -1881,7 +1881,7 @@ export default async function TagPage({ params }: { params: Promise<{ tag: strin
 }
 ```
 
-- [ ] **Step 2: 验证 + Commit**
+- [x] **Step 2: 验证 + Commit**
 
 ```bash
 npm run dev   # /tags/入门 显示该标签文章
@@ -1898,7 +1898,7 @@ git add -A && git commit -m "feat: add tag page"
 **Interfaces:**
 - Produces: `/archive` 路由（按年份聚合 + 标签云，对齐 PRD FR-3.9）。
 
-- [ ] **Step 1: 实现**
+- [x] **Step 1: 实现**
 
 ```tsx
 import type { Metadata } from "next";
@@ -1951,7 +1951,7 @@ export default function ArchivePage() {
 }
 ```
 
-- [ ] **Step 2: 验证 + Commit**
+- [x] **Step 2: 验证 + Commit**
 
 ```bash
 npm run dev   # /archive 按年份聚合
@@ -1965,7 +1965,7 @@ git add -A && git commit -m "feat: add archive page grouped by year"
 **Files:**
 - Create: `app/series/[name]/page.tsx`
 
-- [ ] **Step 1: 实现**
+- [x] **Step 1: 实现**
 
 ```tsx
 import type { Metadata } from "next";
@@ -2001,7 +2001,7 @@ export default async function SeriesPage({ params }: { params: Promise<{ name: s
 }
 ```
 
-- [ ] **Step 2: 验证 + Commit**
+- [x] **Step 2: 验证 + Commit**
 
 ```bash
 npm run dev   # /series/我的博客
@@ -2019,7 +2019,7 @@ git add -A && git commit -m "feat: add series page"
 **Interfaces:**
 - Produces: `public/search-index.json`；`<SearchBox />`；`/search` 路由。
 
-- [ ] **Step 1: 索引脚本（重写 `scripts/build-search-index.mjs`）**
+- [x] **Step 1: 索引脚本（重写 `scripts/build-search-index.mjs`）**
 
 ```js
 import fs from "fs";
@@ -2061,7 +2061,7 @@ const index = files
 fs.writeFileSync(out, JSON.stringify(index));
 ```
 
-- [ ] **Step 2: 恢复脚本（修改 `package.json`）**
+- [x] **Step 2: 恢复脚本（修改 `package.json`）**
 
 确认 `scripts` 含：
 
@@ -2073,7 +2073,7 @@ fs.writeFileSync(out, JSON.stringify(index));
 > 同时在 `.gitignore` 追加 `public/search-index.json`（构建产物，predev/prebuild 自动生成，不入库，避免内容变更污染 diff）。
 > dev 下索引由 `predev` 在启动时生成：新增/修改文章后需重启 `npm run dev`（或手动重跑 `node scripts/build-search-index.mjs`）索引才会刷新——README（Task 23）中注明。
 
-- [ ] **Step 3: 搜索组件（创建 `components/SearchBox.tsx`，输入防抖）**
+- [x] **Step 3: 搜索组件（创建 `components/SearchBox.tsx`，输入防抖）**
 
 ```tsx
 "use client";
@@ -2129,7 +2129,7 @@ export function SearchBox() {
 
 > `role="search"` + `aria-label` + `type="search"`：搜索可访问性（NFR-3）。
 
-- [ ] **Step 4: 搜索页（创建 `app/search/page.tsx`）**
+- [x] **Step 4: 搜索页（创建 `app/search/page.tsx`）**
 
 ```tsx
 import type { Metadata } from "next";
@@ -2151,7 +2151,7 @@ export default function SearchPage() {
 }
 ```
 
-- [ ] **Step 5: 验证 + Commit**
+- [x] **Step 5: 验证 + Commit**
 
 ```bash
 npm run dev   # /search 搜索「你好」能出结果
@@ -2166,7 +2166,7 @@ git add -A && git commit -m "feat: add client-side search with build-time index"
 - Create: `components/featured.tsx`
 - Modify: `app/page.tsx`
 
-- [ ] **Step 1: 实现精选**
+- [x] **Step 1: 实现精选**
 
 ```tsx
 import Link from "next/link";
@@ -2203,7 +2203,7 @@ export function Featured() {
 }
 ```
 
-- [ ] **Step 2: 首页接入**
+- [x] **Step 2: 首页接入**
 
 `app/page.tsx`：
 
@@ -2217,7 +2217,7 @@ export default function Home() {
 }
 ```
 
-- [ ] **Step 3: 验证 + Commit**
+- [x] **Step 3: 验证 + Commit**
 
 ```bash
 npm run dev   # 验证后 Ctrl+C 退出
@@ -2232,7 +2232,7 @@ git add -A && git commit -m "feat: add featured projects and posts to homepage"
 - Create: `components/PageTransition.tsx`
 - Modify: `app/layout.tsx`
 
-- [ ] **Step 1: 转场组件（创建 `components/PageTransition.tsx`）**
+- [x] **Step 1: 转场组件（创建 `components/PageTransition.tsx`）**
 
 ```tsx
 "use client";
@@ -2257,11 +2257,11 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
 }
 ```
 
-- [ ] **Step 2: 布局接入**
+- [x] **Step 2: 布局接入**
 
 `app/layout.tsx` 把 `<main className="mx-auto max-w-5xl px-6">{children}</main>` 换成 `<PageTransition>{children}</PageTransition>` 并补导入。
 
-- [ ] **Step 3: 验证 + Commit**
+- [x] **Step 3: 验证 + Commit**
 
 ```bash
 npm run dev   # 移动视口导航不溢出、汉堡菜单可用、页面切换淡入重放
@@ -2276,7 +2276,7 @@ git add -A && git commit -m "feat: add page transition and responsive polish"
 - Create: `app/sitemap.ts`、`app/robots.ts`、`app/not-found.tsx`
 - Modify: `app/blog/[slug]/page.tsx`（文章级 metadata）
 
-- [ ] **Step 1: sitemap（创建 `app/sitemap.ts`）**
+- [x] **Step 1: sitemap（创建 `app/sitemap.ts`）**
 
 ```tsx
 import type { MetadataRoute } from "next";
@@ -2301,7 +2301,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
 > ⚠️ **静态导出回退（P0 验证项）**：`output: 'export'` 下 `app/sitemap.ts` / `app/robots.ts` 是否生成产物随 Next 版本而异。Step 4 构建后**必须确认** `out/sitemap.xml`、`out/robots.txt` 存在；若缺失，删除这两个文件，改为在 `scripts/build-search-index.mjs` 中同步生成 `public/sitemap.xml` / `public/robots.txt`（静态路由 + 用 gray-matter 读 `content/posts/*.mdx` 补文章/标签/系列 URL，逻辑与本步一致），重新构建验证。
 
-- [ ] **Step 2: 文章级 metadata（修改 `app/blog/[slug]/page.tsx`）**
+- [x] **Step 2: 文章级 metadata（修改 `app/blog/[slug]/page.tsx`）**
 
 ```tsx
 import type { Metadata } from "next";
@@ -2318,7 +2318,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 ```
 
-- [ ] **Step 3: robots + 404 页（创建 `app/robots.ts`、`app/not-found.tsx`）**
+- [x] **Step 3: robots + 404 页（创建 `app/robots.ts`、`app/not-found.tsx`）**
 
 `app/robots.ts`：
 
@@ -2350,7 +2350,7 @@ export default function NotFound() {
 
 > 静态导出会生成 `out/404.html`，各托管平台自动作为 404 页提供。
 
-- [ ] **Step 4: 验证 + Commit**
+- [x] **Step 4: 验证 + Commit**
 
 ```bash
 npm run build   # 确认 out/sitemap.xml、out/robots.txt、out/404.html 生成，含新路由（sitemap/robots 缺失时按 Step 1 注的回退处理）
@@ -2400,7 +2400,7 @@ npx lighthouse https://<你的域名> --only-categories=performance --view
 
 > 记录首页 LCP：目标 < 2.5s。若超标：确认粒子已 `next/dynamic` 懒载、首屏图片已压缩；必要时降低 Task 4 `options.particles.number.value`（40 → 25）或关闭 `links`。
 
-- [ ] **Step 7: 写 README**
+- [x] **Step 7: 写 README**
 
 ```markdown
 # 个人作品集 + 博客
@@ -2429,7 +2429,7 @@ npm run build   # 产出 out/（prebuild 会先生成搜索索引）
 Giscus 配置见 `components/Comments.tsx`（需先在 GitHub 仓库开启 Discussions）。
 ```
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add -A && git commit -m "docs: add deployment and giscus instructions"
