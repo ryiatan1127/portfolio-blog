@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { BlogCard } from "@/components/BlogCard";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { SectionHeading } from "@/components/SectionHeading";
+import { T } from "@/components/T";
 import { getAllSeries, getPostsBySeries } from "@/lib/posts";
 
 export function generateStaticParams() {
@@ -20,7 +21,7 @@ export default async function SeriesPage({ params }: { params: Promise<{ name: s
 
   return (
     <section className="py-32">
-      <SectionHeading as="h1" eyebrow="系列" title={name} />
+      <SectionHeading as="h1" eyebrow={<T k="pages.series.eyebrow" />} title={name} />
       <div className="mt-8 space-y-4">
         {posts.map((p, i) => (
           <ScrollReveal key={p.slug} delay={i * 0.05}><BlogCard post={p} /></ScrollReveal>

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { BlogCard } from "@/components/BlogCard";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { SectionHeading } from "@/components/SectionHeading";
+import { T } from "@/components/T";
 import { getAllPosts, getAllTags } from "@/lib/posts";
 
 export const metadata: Metadata = {
@@ -16,14 +17,14 @@ export default function BlogPage() {
 
   return (
     <section className="py-32">
-      <SectionHeading as="h1" eyebrow="博客" title="我写的东西" />
+      <SectionHeading as="h1" eyebrow={<T k="pages.blog.eyebrow" />} title={<T k="pages.blog.title" />} />
       <div className="mt-8 flex flex-wrap items-center gap-2">
         {tags.map(({ tag, count }) => (
           <Link key={tag} href={`/tags/${encodeURIComponent(tag)}`} className="rounded-full border border-border px-3 py-1 text-sm text-text-muted transition-colors hover:border-accent hover:text-text">
             {tag} · {count}
           </Link>
         ))}
-        <Link href="/search" className="ml-auto text-sm text-accent hover:underline">搜索文章 →</Link>
+        <Link href="/search" className="ml-auto text-sm text-accent hover:underline"><T k="search.link" /></Link>
       </div>
       <div className="mt-8 space-y-4">
         {posts.map((p, i) => (

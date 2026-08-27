@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SearchBox } from "@/components/SearchBox";
 import { SectionHeading } from "@/components/SectionHeading";
+import { T } from "@/components/T";
 
 export const metadata: Metadata = {
   title: "搜索",
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 export default function SearchPage() {
   return (
     <section className="py-32">
-      <SectionHeading as="h1" eyebrow="搜索" title="找文章" />
+      <SectionHeading as="h1" eyebrow={<T k="pages.search.eyebrow" />} title={<T k="pages.search.title" />} />
       <div className="mt-8"><SearchBox /></div>
     </section>
   );

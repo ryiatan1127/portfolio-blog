@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SectionHeading } from "@/components/SectionHeading";
+import { T } from "@/components/T";
 import { getAllPosts, getAllTags } from "@/lib/posts";
 
 export const metadata: Metadata = {
@@ -19,7 +20,7 @@ export default function ArchivePage() {
 
   return (
     <section className="py-32">
-      <SectionHeading as="h1" eyebrow="归档" title="全部文章" />
+      <SectionHeading as="h1" eyebrow={<T k="pages.archive.eyebrow" />} title={<T k="pages.archive.title" />} />
       <div className="mt-10 space-y-10">
         {/* 标签云：标签聚合（PRD FR-3.9），筛选见标签页 */}
         <div className="flex flex-wrap gap-2">

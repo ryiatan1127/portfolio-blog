@@ -2,8 +2,10 @@
 
 import { motion } from "motion/react";
 import type { Project } from "@/content/projects";
+import { useT } from "./LanguageProvider";
 
 export function ProjectCard({ project }: { project: Project }) {
+  const t = useT();
   return (
     <motion.article
       whileHover={{ y: -6 }}
@@ -26,8 +28,8 @@ export function ProjectCard({ project }: { project: Project }) {
         ))}
       </div>
       <div className="mt-5 flex gap-4 text-sm">
-        {project.links.demo && <a href={project.links.demo} target="_blank" rel="noreferrer" className="text-accent hover:underline">演示</a>}
-        {project.links.repo && <a href={project.links.repo} target="_blank" rel="noreferrer" className="text-accent hover:underline">源码</a>}
+        {project.links.demo && <a href={project.links.demo} target="_blank" rel="noreferrer" className="text-accent hover:underline">{t.projectCard.demo}</a>}
+        {project.links.repo && <a href={project.links.repo} target="_blank" rel="noreferrer" className="text-accent hover:underline">{t.projectCard.source}</a>}
       </div>
     </motion.article>
   );

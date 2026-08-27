@@ -5,6 +5,7 @@ import { ReadingProgress } from "@/components/ReadingProgress";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { TableOfContents } from "@/components/TableOfContents";
 import { PostNav } from "@/components/PostNav";
+import { PostMetaLine } from "@/components/PostMetaLine";
 import { RelatedPosts } from "@/components/RelatedPosts";
 import { ShareButtons } from "@/components/ShareButtons";
 import { getAllPosts, getPostBySlug, getRelatedPosts, getPrevNextPost, readingTime, wordCount } from "@/lib/posts";
@@ -39,7 +40,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       <ReadingProgress />
       <article className="mx-auto max-w-4xl py-32">
         <ScrollReveal>
-          <p className="font-mono text-sm text-text-muted">{post.date} · 约 {readingTime(post.content)} 分钟 · {wordCount(post.content)} 字</p>
+          <PostMetaLine date={post.date} readingTime={readingTime(post.content)} wordCount={wordCount(post.content)} />
           <h1 className="font-display mt-3 text-4xl font-bold tracking-tight">{post.title}</h1>
           <p className="mt-4 text-text-muted">{post.description}</p>
         </ScrollReveal>

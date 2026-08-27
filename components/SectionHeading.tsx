@@ -1,6 +1,9 @@
+"use client";
+
+import type { ReactNode } from "react";
 import { ScrollReveal } from "./ScrollReveal";
 
-type Props = { eyebrow: string; title: string; as?: "h1" | "h2" };
+type Props = { eyebrow: ReactNode; title: ReactNode; as?: "h1" | "h2" };
 
 export function SectionHeading({ eyebrow, title, as = "h2" }: Props) {
   const Tag = as;

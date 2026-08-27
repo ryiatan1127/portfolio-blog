@@ -3,19 +3,22 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion, useScroll, useMotionValueEvent } from "motion/react";
-
-const links = [
-  { href: "/", label: "首页" },
-  { href: "/projects", label: "作品" },
-  { href: "/blog", label: "博客" },
-  { href: "/archive", label: "归档" },
-  { href: "/search", label: "搜索" },
-];
+import { LanguageToggle } from "./LanguageToggle";
+import { useT } from "./LanguageProvider";
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const { scrollY } = useScroll();
+  const t = useT();
+
+  const links = [
+    { href: "/", label: t.nav.home },
+    { href: "/projects", label: t.nav.projects },
+    { href: "/blog", label: t.nav.blog },
+    { href: "/archive", label: t.nav.archive },
+    { href: "/search", label: t.nav.search },
+  ];
 
   useMotionValueEvent(scrollY, "change", (latest) => setScrolled(latest > 24));
 
@@ -56,16 +59,19 @@ export function Nav() {
             </li>
           ))}
         </ul>
-        <button
-          type="button"
-          aria-label={open ? "关闭菜单" : "打开菜单"}
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-          aria-controls="mobile-menu"
-          className="flex h-9 w-9 items-center justify-center rounded-lg border border-border text-text md:hidden"
-        >
-          {open ? "✕" : "☰"}
-        </button>
+        <div className="flex items-center gap-2">
+          <LanguageToggle />
+          <button
+            type="button"
+            aria-label={open ? t.nav.closeMenu : t.nav.openMenu}
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+            aria-controls="mobile-menu"
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-border text-text md:hidden"
+          >
+            {open ? "✕" : "☰"}
+          </button>
+        </div>
       </nav>
       {open && (
         <motion.ul

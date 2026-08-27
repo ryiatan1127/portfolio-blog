@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useT } from "./LanguageProvider";
 
 type Doc = { slug: string; title: string; description: string; tags: string[]; content: string };
 
 export function SearchBox() {
+  const t = useT();
   const [docs, setDocs] = useState<Doc[]>([]);
   const [q, setQ] = useState("");
   const [debounced, setDebounced] = useState("");
@@ -29,8 +31,8 @@ export function SearchBox() {
         type="search"
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        aria-label="搜索文章"
-        placeholder="搜索文章标题、标签、正文…"
+        aria-label={t.search.label}
+        placeholder={t.search.placeholder}
         className="w-full rounded-lg border border-border bg-bg-elevated px-4 py-3 text-text outline-none backdrop-blur placeholder:text-text-muted focus:border-accent"
       />
       <ul className="mt-6 space-y-3">
@@ -42,7 +44,7 @@ export function SearchBox() {
             </Link>
           </li>
         ))}
-        {debounced && results.length === 0 && <li className="text-text-muted">没有匹配的结果</li>}
+        {debounced && results.length === 0 && <li className="text-text-muted">{t.search.empty}</li>}
       </ul>
     </form>
   );

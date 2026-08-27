@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import type { Heading } from "@/lib/headings";
+import { useT } from "./LanguageProvider";
 
 export function TableOfContents({ headings }: { headings: Heading[] }) {
+  const t = useT();
   const [active, setActive] = useState("");
 
   useEffect(() => {
@@ -19,7 +21,7 @@ export function TableOfContents({ headings }: { headings: Heading[] }) {
   if (headings.length === 0) return null;
   return (
     <nav className="rounded-lg border border-border bg-bg-elevated p-4 text-sm backdrop-blur">
-      <p className="mb-2 font-semibold text-text">目录</p>
+      <p className="mb-2 font-semibold text-text">{t.toc.title}</p>
       <ul className="space-y-1">
         {headings.map((h) => (
           <li key={h.id} style={{ paddingLeft: h.level === 3 ? 16 : 0 }}>

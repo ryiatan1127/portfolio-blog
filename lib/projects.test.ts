@@ -4,4 +4,5 @@ import { getAllProjects, getFeaturedProjects } from "./projects";
 describe("projects", () => {
   it("返回所有项目", () => { expect(getAllProjects().length).toBeGreaterThan(0); });
   it("只返回 featured 项目", () => { expect(getFeaturedProjects().every((p) => p.featured)).toBe(true); });
+  it("英文版与中文版条目一一对应", () => { expect(getAllProjects("en").length).toBe(getAllProjects("zh").length); });
 });

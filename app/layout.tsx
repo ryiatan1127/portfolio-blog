@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { PageTransition } from "@/components/PageTransition";
+import { LanguageProvider } from "@/components/LanguageProvider";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -16,9 +17,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="zh-CN">
       <body className="antialiased">
-        <Nav />
-        <PageTransition>{children}</PageTransition>
-        <Footer />
+        <LanguageProvider>
+          <Nav />
+          <PageTransition>{children}</PageTransition>
+          <Footer />
+        </LanguageProvider>
       </body>
     </html>
   );
