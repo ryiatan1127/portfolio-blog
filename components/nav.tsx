@@ -33,11 +33,22 @@ export function Nav() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
       className={`fixed inset-x-0 top-0 z-50 transition-colors ${
-        scrolled || open ? "border-b border-border bg-bg-elevated backdrop-blur" : "bg-transparent"
+        scrolled || open ? "backdrop-blur" : "bg-transparent"
       }`}
     >
-      <nav className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-        <Link href="/" className="font-display text-lg font-semibold" onClick={() => setOpen(false)}>Ryia</Link>
+      {/* 淡淡蕾丝背景（素材：public/images/lace-nav.png，未放图时静默无背景） */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-25"
+        style={{
+          backgroundImage: "url('/images/lace-nav.png')",
+          backgroundRepeat: "repeat-x",
+          backgroundSize: "auto 100%",
+          backgroundPosition: "center",
+        }}
+      />
+      <nav className="relative mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+        <Link href="/" className="font-display text-xl font-semibold" onClick={() => setOpen(false)}>Ryia</Link>
         <ul className="hidden items-center gap-6 text-sm text-text-muted md:flex">
           {links.map((l) => (
             <li key={l.href}>

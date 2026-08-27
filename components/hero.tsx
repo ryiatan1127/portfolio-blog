@@ -33,15 +33,15 @@ export function Hero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25 }}
-          className="font-display mt-3 text-5xl font-bold tracking-tight sm:text-6xl"
+          className="font-hero mt-3 text-6xl font-bold tracking-tight sm:text-7xl"
         >
-          Ryia
+          RyiA
         </motion.h1>
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.32 }}
-          className="mt-2 text-xs uppercase tracking-[0.35em] text-text-muted"
+          className="font-display mt-2 text-lg tracking-[0.15em] text-text-muted"
         >
           Ryia
         </motion.p>

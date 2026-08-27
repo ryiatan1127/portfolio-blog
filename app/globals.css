@@ -1,16 +1,52 @@
 @import "tailwindcss";
 
-/* @font-face 同时声明三种格式：上传任一命名文件（display.woff2/ttf/otf）即用，无需改代码 */
+/* 标题/品牌字体：英文（display-en.*）与中文（display-zh.*）分开，各上传任一格式即用。
+   英文排前 → 拉丁字符用英文字体；中文字符自动回退到中文字体 */
 @font-face {
-  font-family: "Display";
-  src: url("/fonts/display.woff2") format("woff2"),
-       url("/fonts/display.ttf") format("truetype"),
-       url("/fonts/display.otf") format("opentype");
+  font-family: "Display-En";
+  src: url("/fonts/display-en.woff2") format("woff2"),
+       url("/fonts/display-en.ttf") format("truetype"),
+       url("/fonts/display-en.otf") format("opentype");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Display-Zh";
+  src: url("/fonts/display-zh.woff2") format("woff2"),
+       url("/fonts/display-zh.ttf") format("truetype"),
+       url("/fonts/display-zh.otf") format("opentype");
+  font-display: swap;
+}
+
+/* 主页中央文字专用字体（Hero）：上传 hero.woff2/ttf/otf 任一即用 */
+@font-face {
+  font-family: "Hero";
+  src: url("/fonts/hero.woff2") format("woff2"),
+       url("/fonts/hero.ttf") format("truetype"),
+       url("/fonts/hero.otf") format("opentype");
+  font-display: swap;
+}
+
+/* 正文字体：英文/拉丁（body-en.*）与中文（body-zh.*）分开，各上传任一格式即用。
+   英文排前 → 拉丁字符用英文字体；中文字符自动回退到中文字体 */
+@font-face {
+  font-family: "Body-En";
+  src: url("/fonts/body-en.woff2") format("woff2"),
+       url("/fonts/body-en.ttf") format("truetype"),
+       url("/fonts/body-en.otf") format("opentype");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Body-Zh";
+  src: url("/fonts/body-zh.woff2") format("woff2"),
+       url("/fonts/body-zh.ttf") format("truetype"),
+       url("/fonts/body-zh.otf") format("opentype");
   font-display: swap;
 }
 
 :root {
-  --font-display: "Display", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-display: "Display-En", "Display-Zh", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-hero: "Hero", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-body: "Body-En", "Body-Zh", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
   --bg: #faf6f2;
   --bg-elevated: rgba(255, 255, 255, 0.55);
   --text: #3d3a45;
@@ -34,11 +70,18 @@
   --color-accent-4: var(--accent-4);
   --color-border: var(--border);
   --font-display: var(--font-display);
+  --font-hero: var(--font-hero);
+  --font-body: var(--font-body);
   --shadow-glow: var(--shadow-glow);
 }
 
+/* 全局基准字号：调大 rem 基准，所有 rem 字号（text-sm / text-lg / text-6xl…）随之等比放大 */
+html {
+  font-size: 18px;
+}
+
 body {
-  font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-body);
   background: var(--bg);
   color: var(--text);
   overflow-x: clip; /* 配合 Task 6 全出血 Hero（w-screen），防横向滚动条 */
