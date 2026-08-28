@@ -45,7 +45,7 @@ export function Nav() {
       {/* 淡淡蕾丝背景（素材：public/images/lace-nav.png，未放图时静默无背景） */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-25"
+        className="pointer-events-none absolute inset-0 opacity-15"
         style={{
           backgroundImage: "url('/images/lace-nav.png')",
           backgroundRepeat: "repeat-x",
