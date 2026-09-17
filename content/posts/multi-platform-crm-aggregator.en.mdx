@@ -1,0 +1,436 @@
+---
+title: Building a Multi-Platform CRM Aggregator
+date: 2026-09-17
+description: From fragmented platforms to a unified workflow — building a multi-platform CRM aggregator.
+tags: [软件工程, CRM, 自动化, 多平台]
+series: 我的博客
+---
+
+## 01 — The Problem Behind the Product
+
+Many software projects begin with a technical problem.
+
+This one did not.
+
+It started with a very practical question:
+
+**Where should information live when a team communicates across multiple platforms?**
+
+In real-world workflows, a customer might come from Telegram, while another conversation happens on WhatsApp.
+
+Each platform has its own account system, data structure, API, permission model, and interaction patterns.
+
+As the number of customers grows, the fragmentation becomes increasingly visible.
+
+Messages are scattered across different platforms.
+
+Contacts are difficult to manage consistently.
+
+Multiple accounts become harder to coordinate.
+
+People have to constantly switch between applications.
+
+And most importantly, none of this creates actual business value.
+
+So I started with a simple question:
+
+> **Can different communication platforms feel like one system?**
+
+That became the starting point of this project.
+
+---
+
+## 02 — From a Simple Idea to a Software System
+
+At first, the solution seemed straightforward:
+
+Put information from different platforms into one interface.
+
+But once I started building it, I realized that:
+
+**Putting data together is not the same as building a unified system.**
+
+Telegram has its own data structures.
+
+WhatsApp has different ones.
+
+The way each platform defines messages, contacts, accounts, and conversations is not necessarily the same.
+
+If every platform simply exposes its own raw data, the result is not really a unified system.
+
+It is just a collection of different systems placed next to each other.
+
+So I began thinking about a more fundamental question:
+
+> **What should the unified model look like?**
+
+I needed an abstraction layer that belonged to my own system.
+
+Regardless of where a message came from, the application should be able to understand it as something like:
+
+* Contact
+* Account
+* Conversation
+* Message
+* Platform
+* Status
+* Metadata
+
+The upper layers should not constantly need to ask:
+
+“Did this message come from Telegram or WhatsApp?”
+
+They should simply understand:
+
+**This is a Message.**
+
+---
+
+## 03 — Designing Around Abstraction
+
+This project gave me a much clearer understanding of one of the fundamental ideas in software engineering:
+
+> **Good abstractions hide complexity.**
+
+If every feature directly depends on a specific platform, the system quickly becomes difficult to maintain.
+
+The architecture could easily turn into:
+
+```text
+UI
+ ↓
+Telegram API
+```
+
+and then:
+
+```text
+UI
+ ↓
+WhatsApp API
+```
+
+As more platforms are added, the dependencies become increasingly tangled.
+
+So I experimented with separating the system into several layers:
+
+```text
+┌──────────────────────────┐
+│          UI / App        │
+├──────────────────────────┤
+│      Business Logic      │
+├──────────────────────────┤
+│   Unified Data Model     │
+├──────────────────────────┤
+│    Platform Adapters     │
+├──────────┬───────┬───────┤
+│ Telegram │ WhatsApp │ ... │
+└──────────┴───────┴───────┘
+```
+
+Platform-specific complexity should stay as much as possible inside the adapter layer.
+
+This means that adding another platform should not require redesigning the entire application.
+
+Ideally, it should require a new adapter.
+
+This shaped an engineering principle that I now use more often:
+
+> **Do not make the entire system understand every detail.**
+
+Each module should understand only what it actually needs to understand.
+
+---
+
+## 04 — Multi-Account Is More Complicated Than It Sounds
+
+Another interesting challenge was:
+
+**multiple accounts.**
+
+With a single Telegram account, many design problems remain hidden.
+
+But once multiple accounts are involved, the system needs to answer questions such as:
+
+Which account owns this message?
+
+Which platform does this contact belong to?
+
+Which account should handle this conversation?
+
+What happens when two accounts receive messages at the same time?
+
+So I began treating:
+
+**Platform**
+
+and
+
+**Account**
+
+as two different concepts.
+
+A platform can contain multiple accounts.
+
+An account can contain many contacts and conversations.
+
+Conceptually:
+
+```text
+Platform
+   │
+   ├── Account A
+   │      ├── Contact
+   │      ├── Conversation
+   │      └── Message
+   │
+   └── Account B
+          ├── Contact
+          ├── Conversation
+          └── Message
+```
+
+This taught me something important:
+
+**Many software engineering problems are not caused by difficult code.**
+
+They are caused by unclear relationships between data.
+
+---
+
+## 05 — The Difference Between APIs and Real Products
+
+During the development process, I worked with different APIs.
+
+Calling an API is usually not the hardest part.
+
+Send a request.
+
+Receive a response.
+
+Parse JSON.
+
+Process the data.
+
+But once an API becomes part of an actual product, the problem changes.
+
+A real system also needs to consider:
+
+* Authentication
+* Session management
+* Error handling
+* Rate limits
+* Network failures
+* Data synchronization
+* State consistency
+* Logging
+* Retry mechanisms
+
+A failed request is not necessarily a serious problem.
+
+A system that does not know why it failed, however, is.
+
+So I started paying much more attention to failure states instead of focusing only on the happy path.
+
+For example:
+
+```text
+Request
+   ↓
+Success → Update State
+   │
+   └── Failure
+          ↓
+      Detect Error
+          ↓
+      Retry / Recover
+          ↓
+      Log
+```
+
+This gave me a much clearer understanding of the difference between a demo and an engineered system.
+
+A demo asks:
+
+> **Does it work?**
+
+An engineering system needs to ask:
+
+> **Will it keep working?**
+
+---
+
+## 06 — Designing for Human Workflow
+
+A CRM system ultimately serves people, not databases.
+
+That made me think more carefully about what users actually need to see.
+
+If the application simply puts every message onto one screen, it technically aggregates information, but it does not necessarily reduce anyone's workload.
+
+So I started thinking about information hierarchy and user workflow.
+
+When a person opens the system, the most important information may not be every historical message.
+
+They may want to know:
+
+* Which customers are waiting for a reply?
+* Which conversations have changed recently?
+* Which platform is each contact from?
+* Which account is currently being used?
+* What should happen next?
+
+This led me to a principle that has influenced my later projects:
+
+> **Software should adapt to the workflow, not force the workflow to adapt to the software.**
+
+---
+
+## 07 — Engineering Is Also About Trade-offs
+
+One of the biggest lessons from this project was that:
+
+**There is rarely a single perfect solution in software engineering.**
+
+You constantly make trade-offs.
+
+Faster development or greater scalability?
+
+More features or a simpler interface?
+
+Real-time synchronization or lower system complexity?
+
+A more sophisticated architecture or lower maintenance cost?
+
+Earlier in my studies, I sometimes assumed:
+
+> “The more complicated the architecture, the more professional it must be.”
+
+Building actual systems changed my perspective.
+
+**Complexity is not a measure of engineering ability.**
+
+If a simple design solves the actual problem, unnecessary abstraction can become a liability.
+
+So I now prefer asking:
+
+> **What is the simplest architecture that can solve the real problem?**
+
+rather than:
+
+> **How complicated can I make it?**
+
+---
+
+## 08 — What This Project Changed for Me
+
+The biggest thing this project taught me was not a particular API.
+
+It was the experience of going through:
+
+**Problem → Architecture → Implementation → Failure → Iteration**
+
+Starting from a real problem.
+
+Designing a system.
+
+Handling differences between platforms.
+
+Thinking about multiple accounts.
+
+Dealing with failures.
+
+Revisiting the data model.
+
+And finally returning to the user's actual workflow.
+
+It helped me understand that:
+
+> **Software engineering is not simply the process of turning requirements into code.**
+
+It is a continuous process of balancing:
+
+**requirements, technology, users, and real-world constraints.**
+
+---
+
+## 09 — What I Want to Explore Next
+
+Looking back, there are many directions in which I could continue developing the project:
+
+* More flexible platform adapters
+* More reliable data synchronization
+* Better message state management
+* Intelligent customer classification
+* AI-assisted customer service
+* Agent-based workflow automation
+
+AI is particularly interesting to me.
+
+Traditional CRM systems primarily answer:
+
+> **Where is the information?**
+
+AI Agents may eventually help answer:
+
+> **What should we do with the information?**
+
+That is one reason I became increasingly interested in Agents.
+
+I am no longer interested only in bringing information together.
+
+I want to explore what software can do **after** the information has been brought together.
+
+---
+
+## 10 — From Aggregation to Intelligence
+
+Looking back, this project became a turning point for me.
+
+I gradually moved from asking:
+
+**How do I build this feature?**
+
+to:
+
+**Why does this feature exist?**
+
+and eventually:
+
+**How should the entire system work?**
+
+They may look like small differences.
+
+For me, however, they represent a transition from:
+
+**writing code**
+
+to
+
+**designing software**
+
+and eventually to
+
+**thinking about systems.**
+
+I am still learning all three.
+
+I do not believe a project has to be perfect to be valuable.
+
+Sometimes the greatest value of a project is that it teaches you to ask a question you would not have asked before.
+
+For this CRM project, the question I took away was:
+
+> **If software can understand information, can it eventually understand what needs to happen next?**
+
+Perhaps that is the question my next project will try to answer.
+
+---
+
+**Project:** Multi-Platform CRM Aggregator
+
+**Focus:** Software Engineering · Multi-platform Integration · CRM · Automation
+
+**Platforms explored:** Telegram · WhatsApp · Other communication platforms
+
+**GitHub:** [AITeam404/global-kit](https://github.com/AITeam404/global-kit)

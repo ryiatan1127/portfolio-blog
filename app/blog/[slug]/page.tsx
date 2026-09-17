@@ -2,10 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { MdxContent } from "@/lib/mdx";
 import { ReadingProgress } from "@/components/ReadingProgress";
-import { ScrollReveal } from "@/components/ScrollReveal";
-import { TableOfContents } from "@/components/TableOfContents";
+import { ArticleLocalized } from "@/components/ArticleLocalized";
 import { PostNav } from "@/components/PostNav";
-import { PostMetaLine } from "@/components/PostMetaLine";
 import { RelatedPosts } from "@/components/RelatedPosts";
 import { ShareButtons } from "@/components/ShareButtons";
 import { getAllPosts, getPostBySlug, getRelatedPosts, getPrevNextPost, readingTime, wordCount } from "@/lib/posts";
@@ -28,10 +26,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
-  if (!post) notFound();   // getPostBySlug 对不存在/草稿返回 undefined，此处兜底生效
+  const zh = getPostBySlug(slug);
+  if (!zh) notFound();   // getPostBySlug 对不存在/草稿返回 undefined，此处兜底生效
+  const en = getPostBySlug(slug, "en"); // 无英文版时为 undefined，客户端回退中文
 
-  const headings = extractHeadings(post.content);
   const related = getRelatedPosts(slug);
   const { newer, older } = getPrevNextPost(slug);
 
@@ -39,20 +37,32 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     <>
       <ReadingProgress />
       <article className="mx-auto max-w-4xl py-32">
-        <ScrollReveal>
-          <PostMetaLine date={post.date} readingTime={readingTime(post.content)} wordCount={wordCount(post.content)} />
-          <h1 className="font-display mt-3 text-4xl font-bold tracking-tight">{post.title}</h1>
-          <p className="mt-4 text-text-muted">{post.description}</p>
-        </ScrollReveal>
-        {post.cover && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={post.cover} alt={post.title} className="mt-8 h-64 w-full rounded-lg object-cover" />
-        )}
-        <div className="mt-10 flex gap-8">
-          <div className="min-w-0 max-w-prose flex-1"><MdxContent source={post.content} /></div>
-          <aside className="hidden w-56 shrink-0 lg:block"><div className="sticky top-24"><TableOfContents headings={headings} /></div></aside>
-        </div>
-        <ShareButtons title={post.title} slug={slug} />
+        <ArticleLocalized
+          cover={zh.cover}
+          zh={{
+            title: zh.title,
+            description: zh.description,
+            date: zh.date,
+            readingTime: readingTime(zh.content),
+            wordCount: wordCount(zh.content),
+            headings: extractHeadings(zh.content),
+            body: <MdxContent source={zh.content} />,
+          }}
+          en={
+            en
+              ? {
+                  title: en.title,
+                  description: en.description,
+                  date: en.date,
+                  readingTime: readingTime(en.content),
+                  wordCount: wordCount(en.content),
+                  headings: extractHeadings(en.content),
+                  body: <MdxContent source={en.content} />,
+                }
+              : undefined
+          }
+        />
+        <ShareButtons title={zh.title} slug={slug} />
         <RelatedPosts posts={related} />
         <PostNav newer={newer} older={older} />
       </article>

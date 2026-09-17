@@ -1,0 +1,452 @@
+---
+title: Building a Multi-Platform CRM Aggregator
+date: 2026-09-17
+description: 从多平台碎片化到统一工作流 —— 构建一个多平台 CRM 聚合器的工程思考。
+tags: [软件工程, CRM, 自动化, 多平台]
+series: 我的博客
+---
+
+## 01 — The Problem Behind the Product
+
+很多软件项目都是从一个技术问题开始的。
+
+但这个项目不是。
+
+它开始于一个非常现实的问题：
+
+**当一个团队同时使用多个通信平台时，信息应该放在哪里？**
+
+在实际的工作场景中，客户可能来自 Telegram，也可能来自 WhatsApp。
+
+不同平台有不同的账号体系、消息结构、API、权限机制和交互方式。
+
+当客户数量逐渐增加之后，问题就开始出现：
+
+消息分散在不同平台。
+
+联系人信息无法统一管理。
+
+不同账号之间难以协同。
+
+工作人员需要频繁切换应用。
+
+而这些操作本身并没有产生任何真正的业务价值。
+
+所以，我开始思考一个很简单的问题：
+
+> **Can different communication platforms feel like one system?**
+
+这就是这个项目最初的出发点。
+
+---
+
+## 02 — From a Simple Idea to a Software System
+
+最开始，我想到的方案非常直接：
+
+把不同平台的数据放到一个界面里。
+
+但真正开始做之后，我发现：
+
+**“把数据放在一起”和“构建一个统一系统”完全是两件事情。**
+
+Telegram 有自己的数据结构。
+
+WhatsApp 有自己的数据结构。
+
+不同平台对消息、联系人、账号和会话的定义也不完全一样。
+
+如果简单地把每个平台的数据直接显示出来，最终得到的只是一个“信息拼盘”。
+
+因此，我开始思考一个更重要的问题：
+
+> **What should the unified model look like?**
+
+我需要设计一层属于系统自己的抽象。
+
+无论消息来自哪个平台，在系统内部都应该能够被理解为类似的对象：
+
+* Contact
+* Account
+* Conversation
+* Message
+* Platform
+* Status
+* Metadata
+
+这样，上层业务逻辑就不需要一直关心：
+
+“这个消息到底来自 Telegram 还是 WhatsApp？”
+
+它只需要知道：
+
+**这是一个 Message。**
+
+---
+
+## 03 — Designing Around Abstraction
+
+这个项目让我第一次比较明显地感受到软件工程中的一个核心思想：
+
+> **好的抽象，可以隐藏复杂性。**
+
+如果每一个功能都直接和具体平台绑定，那么系统会越来越难维护。
+
+例如：
+
+```text
+UI
+ ↓
+Telegram API
+```
+
+然后另一个功能：
+
+```text
+UI
+ ↓
+WhatsApp API
+```
+
+随着平台增加，代码之间的依赖关系会迅速变得复杂。
+
+因此，我尝试把系统拆成几个相对独立的层：
+
+```text
+┌──────────────────────────┐
+│          UI / App        │
+├──────────────────────────┤
+│      Business Logic      │
+├──────────────────────────┤
+│   Unified Data Model     │
+├──────────────────────────┤
+│    Platform Adapters     │
+├──────────┬───────┬───────┤
+│ Telegram │ WhatsApp │ ... │
+└──────────┴───────┴───────┘
+```
+
+平台差异被尽可能限制在 Adapter 层。
+
+这样，当未来需要接入新的平台时，理论上不需要重新设计整个系统。
+
+只需要实现新的平台适配逻辑。
+
+这也是我在这个项目中逐渐形成的一种工程思维：
+
+**Do not make the whole system understand every detail.**
+
+让不同的模块只负责自己应该负责的事情。
+
+---
+
+## 04 — Multi-Account Is More Complicated Than It Sounds
+
+这个项目还有一个让我印象很深的问题：
+
+**多账号。**
+
+如果只有一个 Telegram 账号，很多问题其实并不明显。
+
+但当系统需要同时管理多个账号时，事情开始复杂起来。
+
+系统必须知道：
+
+这个消息属于哪个账号？
+
+这个联系人属于哪个平台？
+
+这个会话应该由哪个账号处理？
+
+如果两个账号同时收到消息，如何避免状态混乱？
+
+于是，我开始把：
+
+**Platform**
+
+和
+
+**Account**
+
+明确区分开。
+
+一个平台可以拥有多个账号。
+
+一个账号又可以拥有大量联系人和会话。
+
+这形成了一个更加清晰的层级关系：
+
+```text
+Platform
+   │
+   ├── Account A
+   │      ├── Contact
+   │      ├── Conversation
+   │      └── Message
+   │
+   └── Account B
+          ├── Contact
+          ├── Conversation
+          └── Message
+```
+
+这个看似简单的设计，让我开始真正意识到：
+
+**很多软件工程问题，并不是代码写不出来，而是数据关系没有想清楚。**
+
+---
+
+## 05 — The Difference Between APIs and Real Products
+
+在学习过程中，我接触过很多 API。
+
+调用 API 本身并不困难。
+
+发送请求。
+
+接受响应。
+
+解析 JSON。
+
+处理数据。
+
+但真正做成一个软件之后，我发现：
+
+**API 只是开始。**
+
+真实的软件还需要考虑：
+
+* Authentication
+* Session Management
+* Error Handling
+* Rate Limits
+* Network Failures
+* Data Synchronization
+* State Consistency
+* Logging
+* Retry Mechanisms
+
+一个 API 请求失败并不可怕。
+
+可怕的是：
+
+**系统不知道它为什么失败，也不知道接下来应该怎么办。**
+
+因此，我开始更加关注异常情况，而不仅仅是 Happy Path。
+
+例如：
+
+```text
+Request
+   ↓
+Success → Update State
+   │
+   └── Failure
+          ↓
+      Detect Error
+          ↓
+      Retry / Recover
+          ↓
+      Log
+```
+
+这让我对“工程”和“Demo”之间的区别有了更直观的理解。
+
+Demo 的目标是：
+
+> **It works.**
+
+工程系统的目标则更接近：
+
+> **It keeps working.**
+
+---
+
+## 06 — Designing for Human Workflow
+
+CRM 最终服务的并不是数据库。
+
+而是人。
+
+所以在开发过程中，我也开始思考：
+
+**工作人员真正需要看到什么？**
+
+如果系统只是把所有消息堆在一个页面里，那么它虽然“整合”了信息，却没有真正减少工作量。
+
+因此，我开始关注信息层级和操作路径。
+
+例如，一个工作人员打开系统后，最重要的可能不是看到所有历史消息。
+
+而是快速知道：
+
+* 哪些客户正在等待回复？
+* 哪些会话最近有变化？
+* 哪些联系人来自哪个平台？
+* 当前使用的是哪个账号？
+* 下一步应该做什么？
+
+这让我第一次比较系统地接触到一个概念：
+
+> **Software should adapt to the workflow, not force the workflow to adapt to the software.**
+
+这句话后来也影响了我开发其他产品时的思考方式。
+
+---
+
+## 07 — Engineering Is Also About Trade-offs
+
+做这个项目的过程中，我也发现：
+
+**软件工程没有永远正确的方案。**
+
+很多时候，你需要在不同目标之间进行取舍。
+
+例如：
+
+更快开发，还是更高的可扩展性？
+
+更多功能，还是更简单的 UI？
+
+实时同步，还是更低的系统复杂度？
+
+更复杂的架构，还是更低的维护成本？
+
+作为学生开发者，我以前很容易认为：
+
+> “架构越复杂越专业。”
+
+但真正开始做项目之后，我逐渐意识到：
+
+**复杂性本身不是能力。**
+
+如果一个简单的设计已经能够解决问题，那么增加额外的抽象反而可能成为负担。
+
+因此，我现在更喜欢问：
+
+> **What is the simplest architecture that can solve the real problem?**
+
+而不是：
+
+> **How complicated can I make it?**
+
+---
+
+## 08 — What This Project Changed for Me
+
+这个项目对我最大的影响，并不是让我学会了某一个具体 API。
+
+而是让我第一次比较完整地经历了：
+
+**Problem → Architecture → Implementation → Failure → Iteration**
+
+从一个真实的问题开始。
+
+设计系统。
+
+处理平台差异。
+
+考虑多账号。
+
+处理异常。
+
+重新调整数据模型。
+
+再回到用户真正的工作流程。
+
+这个过程让我开始理解：
+
+> **Software engineering is not the process of turning requirements into code.**
+
+更准确地说，它是一个不断在：
+
+**需求、技术、用户和现实约束之间寻找平衡的过程。**
+
+---
+
+## 09 — What I Want to Explore Next
+
+现在回头看，这个项目依然有很多可以继续探索的方向。
+
+例如：
+
+* 更完善的平台适配机制
+* 更强的数据同步能力
+* 更可靠的消息状态管理
+* 更智能的客户分类
+* AI-assisted customer service
+* Agent-based workflow automation
+
+尤其是 AI。
+
+如果传统 CRM 解决的是：
+
+> **Where is the information?**
+
+那么 AI Agent 可能进一步解决：
+
+> **What should we do with the information?**
+
+这也是我后来开始研究 Agent 的原因之一。
+
+我越来越感兴趣的，不只是“如何把信息集中起来”。
+
+而是：
+
+**当信息已经集中之后，软件还能不能主动帮助人完成下一步？**
+
+---
+
+## 10 — From Aggregation to Intelligence
+
+回头看，这个项目对我来说其实是一个转折点。
+
+它让我从单纯关注：
+
+**How do I build this feature?**
+
+开始逐渐转向：
+
+**Why does this feature exist?**
+
+再进一步：
+
+**How should the entire system work?**
+
+这三个问题看起来只是一步一步深入。
+
+但对我来说，它们代表了从：
+
+**写代码**
+
+到
+
+**设计软件**
+
+再到
+
+**思考系统**
+
+的变化。
+
+而这也是我作为一名软件工程学生，仍然在不断学习的事情。
+
+我并不认为一个项目必须做到完美才有价值。
+
+有时候，一个项目真正的价值，是它让你开始提出一个以前不会提出的问题。
+
+对于这个 CRM 项目来说，我留下的问题是：
+
+> **If software can understand information, can it eventually understand what needs to happen next?**
+
+也许，这就是我下一个项目要回答的问题。
+
+---
+
+**Project:** Multi-Platform CRM Aggregator
+
+**Focus:** Software Engineering · Multi-platform Integration · CRM · Automation
+
+**Platforms explored:** Telegram · WhatsApp · Other communication platforms
+
+**GitHub:** [AITeam404/global-kit](https://github.com/AITeam404/global-kit)

@@ -25,7 +25,7 @@ function readSiteUrl() {
   return m ? m[1] : "https://YOUR-DOMAIN.com";
 }
 
-const files = fs.readdirSync(dir).filter((f) => f.endsWith(".mdx"));
+const files = fs.readdirSync(dir).filter((f) => f.endsWith(".mdx") && !f.endsWith(".en.mdx"));
 const posts = files
   .map((f) => {
     const raw = fs.readFileSync(path.join(dir, f), "utf8");

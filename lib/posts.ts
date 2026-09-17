@@ -26,7 +26,8 @@ export type PostMeta = {
 export type Post = PostMeta & { content: string };
 
 function readPosts(): PostMeta[] {
-  const files = fs.readdirSync(postsDir).filter((f) => f.endsWith(".mdx"));
+  // 主列表只认中文主文件（<slug>.mdx）；英文版 <slug>.en.mdx 由 getPostBySlug 按语言单独读取，不参与列表
+  const files = fs.readdirSync(postsDir).filter((f) => f.endsWith(".mdx") && !f.endsWith(".en.mdx"));
   const posts = files.map((f) => {
     const raw = fs.readFileSync(path.join(postsDir, f), "utf8");
     const { data } = matter(raw);
@@ -47,9 +48,11 @@ export function getAllPosts(): PostMeta[] {
   return cache;
 }
 
-export function getPostBySlug(slug: string): Post | undefined {
+export function getPostBySlug(slug: string, lang: "zh" | "en" = "zh"): Post | undefined {
   if (!/^[a-z0-9-]+$/i.test(slug)) return undefined; // slug 白名单：防路径穿越（NFR-7）
-  const file = path.join(postsDir, `${slug}.mdx`);
+  // 英文版读 <slug>.en.mdx；无英文版时返回 undefined（由调用方回退到中文）
+  const fileName = lang === "en" ? `${slug}.en.mdx` : `${slug}.mdx`;
+  const file = path.join(postsDir, fileName);
   if (!fs.existsSync(file)) return undefined;
   const raw = fs.readFileSync(file, "utf8");
   const { data, content } = matter(raw);
